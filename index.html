@@ -247,6 +247,16 @@ button{font-family:inherit; cursor:pointer; border:none;}
 .detail-card.wide .dic{font-size:2rem; flex-shrink:0;}
 .dtitle{font-weight:800; font-size:.85rem; margin-top:2px;}
 .dfact{font-size:.85rem; font-weight:600; color:var(--ink); line-height:1.4;}
+/* ===== VIDEO MODAL (sayt daxili mahnı oynadıcı) ===== */
+.video-overlay{position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:200; display:flex; align-items:center; justify-content:center; padding:16px; animation:fadeInOverlay .2s ease;}
+@keyframes fadeInOverlay{from{opacity:0;} to{opacity:1;}}
+.video-modal{background:#000; border-radius:16px; overflow:hidden; width:100%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,.5); animation:modalPop .25s cubic-bezier(.34,1.56,.64,1);}
+@keyframes modalPop{from{transform:scale(.85); opacity:0;} to{transform:scale(1); opacity:1;}}
+.video-modal-head{display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--ink); color:#fff; font-weight:800; font-size:.9rem;}
+.video-close{cursor:pointer; font-size:1.1rem; padding:2px 8px; border-radius:6px;}
+.video-close:active{background:rgba(255,255,255,.2);}
+.video-frame-wrap{position:relative; width:100%; padding-bottom:56.25%; height:0;}
+.video-frame-wrap iframe{position:absolute; top:0; left:0; width:100%; height:100%;}
 .game-square{border:2px solid var(--blue); border-radius:16px; overflow:hidden; background:#fff; text-align:center; transition:transform .15s;}
 .game-square:active{transform:scale(.96);}
 .game-square .thumb{height:90px; display:flex; align-items:center; justify-content:center; font-size:2.3rem;}
@@ -749,12 +759,12 @@ const ALPHABET_DATA = [
 ];
 
 const MUSIC_DATA = [
-  {title:'Ağ kəpənək', by:'bəst. S. Rüstəmov'}, {title:'Ağacdələn', by:'bəst. Ə. Cavanşirov'},
-  {title:'Ana laylası', by:'bəst. O. Zülfüqarov'}, {title:'Yeni il gəlir', by:'bəst. M. Mirzəyev'},
+  {title:'Ağ kəpənək', by:'bəst. S. Rüstəmov', vid:'3SZpE5afOjI'}, {title:'Ağacdələn', by:'bəst. Ə. Cavanşirov'},
+  {title:'Ana laylası', by:'bəst. O. Zülfüqarov', vid:'xJm61hsY6yw'}, {title:'Yeni il gəlir', by:'bəst. M. Mirzəyev'},
   {title:'Yeddi çiçək, yeddi gül', by:'bəst. M. Əlibəyli'}, {title:'Uşaq bağçamız', by:'bəst. N. Qəzənfəroğlu'},
-  {title:'Ala-bula boz keçi', by:'bəst. O. Zülfüqarov'}, {title:'Kukla', by:'bəst. Ağabacı Rzayeva'},
+  {title:'Ala-bula boz keçi', by:'bəst. O. Zülfüqarov', vid:'8ZB2ItVoGG8'}, {title:'Kukla', by:'bəst. Ağabacı Rzayeva'},
   {title:'Xoruz', by:'xalq mahnısı'}, {title:'Quzum', by:'xalq mahnısı'},
-  {title:'Cücələrim', by:'bəst. Qəmbər Hüseynli'}, {title:'Qatar gəlir uzaqdan', by:'uşaq mahnısı'}
+  {title:'Cücələrim', by:'bəst. Qəmbər Hüseynli', vid:'3IsWpgMzx54'}, {title:'Qatar gəlir uzaqdan', by:'uşaq mahnısı'}
 ];
 
 const SCIENCE_DATA = [
@@ -791,6 +801,29 @@ function openThemeDetail(key){
 }
 function closeThemeDetail(){ themeDetail = null; render(); }
 
+function playSongModal(idx){
+  const song = MUSIC_DATA[idx];
+  if(!song.vid) return;
+  const ov = document.createElement('div');
+  ov.className = 'video-overlay';
+  ov.id = 'videoOverlay';
+  ov.innerHTML = `<div class="video-modal">
+    <div class="video-modal-head">
+      <span>${song.title}</span>
+      <span class="video-close" onclick="closeSongModal()">✕</span>
+    </div>
+    <div class="video-frame-wrap">
+      <iframe src="https://www.youtube-nocookie.com/embed/${song.vid}?autoplay=1&rel=0" title="${song.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>`;
+  ov.onclick = (e)=>{ if(e.target===ov) closeSongModal(); };
+  document.body.appendChild(ov);
+}
+function closeSongModal(){
+  const ov = document.getElementById('videoOverlay');
+  if(ov) ov.remove();
+}
+
 function renderThemeDetail(){
   const app = document.getElementById('app');
   app.innerHTML = '';
@@ -815,9 +848,9 @@ function renderThemeDetail(){
     </div>`;
   } else if(themeDetail==='music'){
     d.innerHTML = `<h1 class="headline">🎵 Azərbaycan Uşaq Mahnıları</h1>
-    <p class="sub">Karta bas — YouTube-da axtarış açılsın və dinləyin!</p>
+    <p class="sub">Karta bas — 🎬 işarəli mahnılar birbaşa saytda oynayır!</p>
     <div class="detail-grid">
-      ${MUSIC_DATA.map(x=>`<div class="detail-card" style="cursor:pointer;" onclick="window.open('https://www.youtube.com/results?search_query=${encodeURIComponent(x.title+' uşaq mahnısı')}','_blank')"><div class="dic">▶️</div><div class="dtitle">${x.title}</div><div class="dsub">${x.by}</div></div>`).join('')}
+      ${MUSIC_DATA.map((x,i)=>`<div class="detail-card" style="cursor:pointer;" onclick="${x.vid?`playSongModal(${i})`:`window.open('https://www.youtube.com/results?search_query=${encodeURIComponent(x.title+' uşaq mahnısı')}','_blank')`}"><div class="dic">${x.vid?'🎬':'🔍'}</div><div class="dtitle">${x.title}</div><div class="dsub">${x.by}</div></div>`).join('')}
     </div>`;
   } else if(themeDetail==='science'){
     d.innerHTML = `<h1 class="headline">🔬 Elm Faktları</h1>
