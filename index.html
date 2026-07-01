@@ -484,8 +484,9 @@ function render(){
     <div class="logo"><span class="l1">Uşaq</span><span class="l2">I</span><span class="l3">Q</span><span class="l4">•</span></div>`;
   wrap.appendChild(top);
 
-  // STEPPER (only during quiz phase, screens 2..2+QUIZ_LEN-1)
-  const quizStart=2, quizEnd = quizStart+QUIZ_LEN-1;
+  // STEPPER (only during quiz phase)
+  const INTRO_COUNT = 10;
+  const quizStart=INTRO_COUNT+2, quizEnd = quizStart+QUIZ_LEN-1;
   const currentSet = QUESTION_SETS[state.age] || QUESTION_SETS['1–2'];
   if(s>=quizStart && s<=quizEnd){
     const qIdx = s-quizStart;
@@ -509,23 +510,25 @@ function render(){
   scr.className='screen';
 
   // ===== SCREEN ROUTER =====
-  if(s===0){ scr.appendChild(screenAge()); }
-  else if(s===1){ scr.appendChild(screenGender()); }
+  // --- 10 tanıtım (intro) ekranı — testdən ƏVVƏL ---
+  if(s===0){ scr.appendChild(screenGet1()); }
+  else if(s===1){ scr.appendChild(screenGet2()); }
+  else if(s===2){ scr.appendChild(screenGet3()); }
+  else if(s===3){ scr.appendChild(screenCertified()); }
+  else if(s===4){ scr.appendChild(screenKidsLove()); }
+  else if(s===5){ scr.appendChild(screenReviews()); }
+  else if(s===6){ scr.appendChild(screenGrowthChart()); }
+  else if(s===7){ scr.appendChild(screenStressFree()); }
+  else if(s===8){ scr.appendChild(screenThemes()); }
+  else if(s===9){ scr.appendChild(screenHowItWorks()); }
+  // --- Test fazası ---
+  else if(s===INTRO_COUNT){ scr.appendChild(screenAge()); }
+  else if(s===INTRO_COUNT+1){ scr.appendChild(screenGender()); }
   else if(s>=quizStart && s<=quizEnd){ scr.appendChild(screenQuiz(s-quizStart, currentSet)); }
-  else if(s===quizEnd+1){ scr.appendChild(screenAnalysis()); }
-  else if(s===quizEnd+2){ scr.appendChild(screenCreating()); }
-  else if(s===quizEnd+3){ scr.appendChild(screenEmail()); }
-  else if(s===quizEnd+4){ scr.appendChild(screenHowItWorks()); }
-  else if(s===quizEnd+5){ scr.appendChild(screenGrowthChart()); }
-  else if(s===quizEnd+6){ scr.appendChild(screenStressFree()); }
-  else if(s===quizEnd+7){ scr.appendChild(screenKidsLove()); }
-  else if(s===quizEnd+8){ scr.appendChild(screenGet1()); }
-  else if(s===quizEnd+9){ scr.appendChild(screenGet2()); }
-  else if(s===quizEnd+10){ scr.appendChild(screenGet3()); }
-  else if(s===quizEnd+11){ scr.appendChild(screenReviews()); }
-  else if(s===quizEnd+12){ scr.appendChild(screenExpert()); }
-  else if(s===quizEnd+13){ scr.appendChild(screenThemes()); }
-  else if(s===quizEnd+14){ scr.appendChild(screenCertified()); }
+  else if(s===quizEnd+1){ scr.appendChild(screenExpert()); }
+  else if(s===quizEnd+2){ scr.appendChild(screenAnalysis()); }
+  else if(s===quizEnd+3){ scr.appendChild(screenCreating()); }
+  else if(s===quizEnd+4){ scr.appendChild(screenEmail()); }
   else { app.innerHTML=''; app.appendChild(screenReport()); appendFooter(app); appendTabBar(app); return; }
 
   wrap.appendChild(scr);
