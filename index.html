@@ -546,7 +546,11 @@ function goBack(){ if(state.screen>0){ state.screen--; render(); } }
 
 function screenAge(){
   const d=document.createElement('div');
-  d.innerHTML = `<h1 class="q-title">Uşağınıza neçə yaş var?</h1>
+  d.innerHTML = `<div class="info-banner">
+    <div class="ic">${iconRow(['page'],40)}</div>
+    <p>Başlayın indi — çap oluna bilən iş vərəqləri əldə edin!</p>
+  </div>
+  <h1 class="q-title">Uşağınıza neçə yaş var?</h1>
   <div class="age-grid">
     ${ageOptions.map((o,i)=>`<div class="age-card" onclick="pickAge(${i})">
       <div class="thumb">${o.emoji}</div>
