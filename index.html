@@ -814,9 +814,9 @@ function renderThemeDetail(){
     </div>`;
   } else if(themeDetail==='music'){
     d.innerHTML = `<h1 class="headline">🎵 Azərbaycan Uşaq Mahnıları</h1>
-    <p class="sub">10 sevimli mahnı adı — özün axtarıb dinlə!</p>
+    <p class="sub">Karta bas — YouTube-da axtarış açılsın və dinləyin!</p>
     <div class="detail-grid">
-      ${MUSIC_DATA.map(x=>`<div class="detail-card"><div class="dic">🎵</div><div class="dtitle">${x.title}</div><div class="dsub">${x.by}</div></div>`).join('')}
+      ${MUSIC_DATA.map(x=>`<div class="detail-card" style="cursor:pointer;" onclick="window.open('https://www.youtube.com/results?search_query=${encodeURIComponent(x.title+' uşaq mahnısı')}','_blank')"><div class="dic">▶️</div><div class="dtitle">${x.title}</div><div class="dsub">${x.by}</div></div>`).join('')}
     </div>`;
   } else if(themeDetail==='science'){
     d.innerHTML = `<h1 class="headline">🔬 Elm Faktları</h1>
