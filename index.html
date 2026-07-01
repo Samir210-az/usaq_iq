@@ -18,10 +18,10 @@ button{font-family:inherit; cursor:pointer; border:none;}
 .app{max-width:480px; margin:0 auto; min-height:100vh; background:var(--white); position:relative; display:flex; flex-direction:column;}
 .topbar{display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid #eee;}
 .back-btn{width:32px; height:32px; border-radius:50%; background:#f2f2f2; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;}
-.logo{font-size:1.15rem; display:flex; align-items:center; gap:2px;}
-.logo .l1{color:var(--ink);} .logo .l2{color:var(--blue); background:#eaf0ff; padding:2px 6px; border-radius:6px;}
-.logo .l3{color:var(--coral); background:#fff1e8; padding:2px 6px; border-radius:6px;}
-.logo .l4{color:var(--teal); background:#e6f7f5; padding:2px 6px; border-radius:6px;}
+.logo{font-size:1.15rem; display:flex; align-items:center; gap:1px; font-family:'Baloo 2',sans-serif; font-weight:800;}
+.logo-letter{display:inline-block; animation:logoBounce 2.4s ease-in-out infinite; text-shadow:0 2px 4px rgba(0,0,0,.08);}
+@keyframes logoBounce{0%,60%,100%{transform:translateY(0);} 30%{transform:translateY(-5px);}}
+.logo-extra{margin-left:6px; font-size:.72rem; color:var(--ink-soft); font-weight:700;}
 .stepper{display:flex; align-items:center; padding:14px 24px 4px; gap:6px;}
 .dot{width:26px; height:26px; border-radius:50%; border:2px solid #d9dce3; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:800; color:#aab; background:#fff; flex-shrink:0; transition:all .3s;}
 .dot.done{background:var(--blue); border-color:var(--blue); color:#fff;}
@@ -295,6 +295,12 @@ button{font-family:inherit; cursor:pointer; border:none;}
 <script>
 const state = { screen:0, age:null, gender:null, answers:[], email:'' };
 let appMode = 'funnel';
+const LOGO_LETTERS = ['U','ş','a','q','I','Q'];
+const LOGO_COLORS = ['#2A9D8F','#D2A55D','#F4A261','#6A0000','#2563eb','#d63384'];
+function renderLogoHTML(extra){
+  const letters = LOGO_LETTERS.map((ch,i)=>`<span class="logo-letter" style="color:${LOGO_COLORS[i%LOGO_COLORS.length]}; animation-delay:${(i*0.12).toFixed(2)}s;">${ch}</span>`).join('');
+  return `<div class="logo">${letters}${extra?`<span class="logo-extra">${extra}</span>`:''}</div>`;
+}
 function appendTabBar(container){
   const t = document.createElement('div');
   t.className = 'tab-bar';
@@ -499,7 +505,7 @@ function render(){
   const top = document.createElement('div');
   top.className='topbar';
   top.innerHTML = `${s>0?'<div class="back-btn" onclick="goBack()">←</div>':''}
-    <div class="logo"><span class="l1">Uşaq</span><span class="l2">I</span><span class="l3">Q</span><span class="l4">•</span></div>`;
+    ${renderLogoHTML()}`;
   wrap.appendChild(top);
 
   // STEPPER (only during quiz phase)
@@ -915,7 +921,7 @@ function screenReport(){
   const durLabel = {week:'1 həftəlik', month:'1 aylıq', year:'1 illik'}[planDuration];
 
   app.innerHTML = `
-  <div class="topbar"><div class="logo"><span class="l1">Uşaq</span><span class="l2">I</span><span class="l3">Q</span><span class="l4">•</span></div></div>
+  <div class="topbar">${renderLogoHTML()}</div>
   <div class="screen" style="padding-top:20px;">
     <div style="text-align:center; font-size:.85rem; font-weight:800; color:var(--green); background:#e8f7ee; display:inline-block; padding:6px 14px; border-radius:999px; margin:0 auto 14px;">🎁 Hesabat tamamilə PULSUZDUR</div>
     <h1 class="headline">Fərdi İnkişaf Hesabatı</h1>
@@ -1221,7 +1227,7 @@ function renderGamesApp(){
   const top = document.createElement('div'); top.className='topbar';
   const backAction = gameView==='home' ? 'exitGames()' : 'goGamesHome()';
   top.innerHTML = `<div class="back-btn" onclick="${backAction}">←</div>
-    <div class="logo"><span class="l1">Uşaq</span><span class="l2">I</span><span class="l3">Q</span> <span style="font-size:.7rem; color:var(--ink-soft);">🎮</span></div>
+    ${renderLogoHTML('🎮')}
     ${gameView!=='home'?`<div class="score-pill">⭐ ${score}${getMax(__currentGameKey())?'/'+getMax(__currentGameKey()):''}</div>`:''}`;
   app.appendChild(top);
 
@@ -1714,7 +1720,7 @@ function renderColoringApp(){
   app.innerHTML = '';
   const top = document.createElement('div'); top.className='topbar';
   top.innerHTML = `${coloringView==='draw'?'<div class="back-btn" onclick="coloringBackToGallery()">←</div>':''}
-    <div class="logo"><span class="l1">Uşaq</span><span class="l2">I</span><span class="l3">Q</span> <span style="font-size:.7rem; color:var(--ink-soft);">🖍️</span></div>`;
+    ${renderLogoHTML('🖍️')}`;
   app.appendChild(top);
 
   const scr = document.createElement('div'); scr.className='screen';
