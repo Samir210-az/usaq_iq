@@ -277,7 +277,7 @@ button{font-family:inherit; cursor:pointer; border:none;}
 
 .outline-btn{background:#fff; border:2px solid var(--blue); color:var(--blue); padding:14px 32px; border-radius:14px; font-weight:800; font-size:.95rem; margin-top:10px; width:100%; max-width:280px;}
 
-.balloon-area{flex:1; position:relative; background:linear-gradient(180deg,#dbeafe,#eff6ff); border-radius:18px; overflow:hidden; margin-bottom:14px;}
+.balloon-area{flex:1; min-height:320px; position:relative; background:linear-gradient(180deg,#dbeafe,#eff6ff); border-radius:18px; overflow:hidden; margin-bottom:14px;}
 .balloon{position:absolute; width:52px; height:64px; border-radius:50% 50% 50% 50%/60% 60% 40% 40%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; cursor:pointer; box-shadow:inset -6px -6px 10px rgba(0,0,0,.1);}
 .timer-hud{display:flex; justify-content:space-between; font-weight:800; padding:0 4px 10px; font-size:.9rem;}
 
@@ -1462,9 +1462,14 @@ function renderBalloonGame(){
   const d=document.createElement('div');
   d.innerHTML = `<div class="timer-hud"><span>⏱️ <span id="timeLeft">${balloonTime}</span> san</span><span>🎈 Vur!</span></div>
   <div class="balloon-area" id="balloonArea"></div>`;
-  setTimeout(()=>{
+  let tries = 0;
+  function initBalloonLoop(){
     const area = document.getElementById('balloonArea');
-    if(!area) return;
+    if(!area){
+      tries++;
+      if(tries < 20) setTimeout(initBalloonLoop, 100);
+      return;
+    }
     clearInterval(balloonTimer); clearInterval(balloonSpawn);
     balloonTimer = setInterval(()=>{
       balloonTime--;
@@ -1476,15 +1481,19 @@ function renderBalloonGame(){
       }
     }, 1000);
     balloonSpawn = setInterval(()=>spawnBalloon(area), currentTierData().balloonSpawn);
-  }, 50);
+    spawnBalloon(area); // ilk balonu dərhal göstər, gözlətmə
+  }
+  setTimeout(initBalloonLoop, 50);
   return d;
 }
 const BALLOON_COLORS = ['#ef4444','#3b82f6','#f59e0b','#10b981','#a855f7','#ec4899'];
 function spawnBalloon(area){
   if(!area || !document.body.contains(area)) return;
+  const areaW = area.clientWidth || 300;
+  const areaH = area.clientHeight || 320;
   const b = document.createElement('div');
   b.className='balloon';
-  const left = Math.random()*(area.clientWidth-52);
+  const left = Math.max(0, Math.random()*(areaW-52));
   const color = BALLOON_COLORS[Math.floor(Math.random()*BALLOON_COLORS.length)];
   b.style.left = left+'px';
   b.style.bottom = '-70px';
@@ -1493,7 +1502,7 @@ function spawnBalloon(area){
   const dur = 3.2 + Math.random()*1.8;
   b.style.transition = `bottom ${dur}s linear`;
   area.appendChild(b);
-  requestAnimationFrame(()=>{ b.style.bottom = (area.clientHeight+70)+'px'; });
+  requestAnimationFrame(()=>{ b.style.bottom = (areaH+70)+'px'; });
   b.onclick = ()=>{ score++; document.querySelectorAll('.score-pill').forEach(p=>p.innerText='⭐ '+score); b.remove(); };
   setTimeout(()=>{ if(b.parentNode) b.remove(); }, dur*1000+100);
 }
