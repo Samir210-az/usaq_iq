@@ -214,6 +214,24 @@ button{font-family:inherit; cursor:pointer; border:none;}
 .tier-square .lbl{background:var(--blue); color:#fff; padding:9px 6px; font-weight:800; font-size:.78rem;}
 .tier-square.active{border-color:var(--bordo,#6A0000);}
 .tier-square.active .lbl{background:var(--bordo,#6A0000);}
+/* ===== TANITIM EKRANLARI — canlı görünüş ===== */
+.intro-progress{height:5px; background:#eee; border-radius:999px; margin:0 20px; overflow:hidden;}
+.intro-progress-fill{height:100%; background:linear-gradient(90deg,var(--teal),var(--gold),var(--coral)); transition:width .4s ease;}
+.intro-progress-lbl{text-align:center; font-size:.7rem; font-weight:800; color:var(--ink-soft); margin:4px 0 2px;}
+.screen.t-teal{background:linear-gradient(180deg,#e6f7f5 0%,#fff 220px);}
+.screen.t-gold{background:linear-gradient(180deg,#faf1e0 0%,#fff 220px);}
+.screen.t-coral{background:linear-gradient(180deg,#fdeee6 0%,#fff 220px);}
+.screen.t-bordo{background:linear-gradient(180deg,#f6e8e8 0%,#fff 220px);}
+.screen .bullet-list li{opacity:0; transform:translateX(-14px); animation:bulletIn .45s ease forwards;}
+.screen .bullet-list li:nth-child(1){animation-delay:.05s;}
+.screen .bullet-list li:nth-child(2){animation-delay:.15s;}
+.screen .bullet-list li:nth-child(3){animation-delay:.25s;}
+.screen .bullet-list li:nth-child(4){animation-delay:.35s;}
+@keyframes bulletIn{to{opacity:1; transform:translateX(0);}}
+.screen .feature-emoji{animation:emojiPop .5s cubic-bezier(.34,1.56,.64,1) .1s both;}
+@keyframes emojiPop{0%{transform:scale(.4) rotate(-8deg); opacity:0;} 100%{transform:scale(1) rotate(0); opacity:1;}}
+.screen .headline{animation:slideDown .4s ease both;}
+@keyframes slideDown{from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);}}
 
 .game-sq-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
 .game-square{border:2px solid var(--blue); border-radius:16px; overflow:hidden; background:#fff; text-align:center; transition:transform .15s;}
@@ -506,8 +524,22 @@ function render(){
     wrap.appendChild(lbl);
   }
 
+  // INTRO PROGRESS BAR (only for the 10 intro/marketing screens)
+  if(s < INTRO_COUNT){
+    const ip = document.createElement('div'); ip.className='intro-progress';
+    ip.innerHTML = `<div class="intro-progress-fill" style="width:${((s+1)/INTRO_COUNT*100)}%"></div>`;
+    wrap.appendChild(ip);
+    const ipl = document.createElement('div'); ipl.className='intro-progress-lbl';
+    ipl.innerText = `${s+1} / ${INTRO_COUNT}`;
+    wrap.appendChild(ipl);
+  }
+
   const scr = document.createElement('div');
   scr.className='screen';
+  if(s < INTRO_COUNT){
+    const themes = ['t-teal','t-gold','t-coral','t-bordo'];
+    scr.classList.add(themes[s % themes.length]);
+  }
 
   // ===== SCREEN ROUTER =====
   // --- 10 tanıtım (intro) ekranı — testdən ƏVVƏL ---
@@ -621,7 +653,7 @@ function screenCreating(){
   const d=document.createElement('div');
   d.innerHTML = `<h1 class="headline">Sizin fərdi tədris proqramınız yaradılır</h1>
   <div class="progress-fake"><div class="spinner"></div><div style="font-weight:700; color:var(--ink-soft);">Cavablarınız təhlil olunur...</div></div>
-  <div class="counter-box"><span class="num">3 mln+</span> valideyn tətbiqi qiymətləndirib</div>`;
+  <div class="counter-box"><span class="num">10,000+</span> valideyn tətbiqi qiymətləndirib</div>`;
   setTimeout(()=>{ if(!popupShown){ popupShown=true; showPopup(); } else { next(); } }, 900);
   return d;
 }
@@ -794,7 +826,7 @@ function screenGet1(){
   d.innerHTML = `<div class="get-tag">Nə əldə edirsiniz 1/3</div>
   <h1 class="headline" style="text-align:left;">UşaqIQ Təhsil Tətbiqi</h1>
   <ul class="bullet-list">
-    <li>1000-dən çox təhsil oyunu</li>
+    <li>100-dən çox təhsil oyunu</li>
     <li>50+ personajlı təhsil cizgi filmi</li>
     <li>Müxtəlif fəaliyyətlər: mahnı, rəsm, rəngləmə, tapmaca</li>
   </ul>
@@ -837,7 +869,7 @@ function screenGet3(){
 
 function screenReviews(){
   const d=document.createElement('div');
-  d.innerHTML = `<h1 class="headline">3 milyon valideyn</h1>
+  d.innerHTML = `<h1 class="headline">10,000+ valideyn</h1>
   <p class="sub">Onlar artıq UşaqIQ tətbiqini uşaqları üçün istifadə edir.</p>
   <div class="rating-cards">
     <div class="rating-card"><div class="stars">★★★★★</div><div style="font-size:.78rem; color:var(--ink-soft); font-weight:700;">28.2K rəy</div><div class="num">4.9</div></div>
