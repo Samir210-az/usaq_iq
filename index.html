@@ -234,6 +234,19 @@ button{font-family:inherit; cursor:pointer; border:none;}
 @keyframes slideDown{from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);}}
 
 .game-sq-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+/* ===== FƏRQLİ MÖVZULAR — detail kartları ===== */
+.detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;}
+.detail-grid-3{grid-template-columns:repeat(3,1fr);}
+.detail-card{background:var(--cream); border-radius:16px; padding:16px 10px; text-align:center; border:1px solid rgba(0,0,0,.05); transition:transform .15s;}
+.detail-card:active{transform:scale(.95);}
+.detail-card.wide{grid-column:span 2; display:flex; align-items:center; gap:12px; text-align:left; padding:14px;}
+.dnum{font-family:'Baloo 2'; font-weight:800; font-size:2rem; color:var(--blue);}
+.dsub{font-size:.72rem; font-weight:700; color:var(--ink-soft); margin-top:4px; letter-spacing:1px;}
+.dletter{font-family:'Baloo 2'; font-weight:800; font-size:1.6rem; color:var(--bordo,#6A0000);}
+.dic{font-size:1.6rem; margin:4px 0;}
+.detail-card.wide .dic{font-size:2rem; flex-shrink:0;}
+.dtitle{font-weight:800; font-size:.85rem; margin-top:2px;}
+.dfact{font-size:.85rem; font-weight:600; color:var(--ink); line-height:1.4;}
 .game-square{border:2px solid var(--blue); border-radius:16px; overflow:hidden; background:#fff; text-align:center; transition:transform .15s;}
 .game-square:active{transform:scale(.96);}
 .game-square .thumb{height:90px; display:flex; align-items:center; justify-content:center; font-size:2.3rem;}
@@ -494,6 +507,7 @@ let popupShown = false;
 function render(){
   if(appMode==='games'){ renderGamesApp(); return; }
   if(appMode==='coloring'){ renderColoringApp(); return; }
+  if(appMode==='funnel' && themeDetail){ renderThemeDetail(); return; }
   const app = document.getElementById('app');
   app.innerHTML = '';
   const s = state.screen;
@@ -716,6 +730,112 @@ const TOPIC_SVGS = {
   science: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><g fill="#66757F"><path d="M19.78 21.345l-6.341-6.342-.389 4.38 2.35 2.351z"/><path d="M15.4 22.233c-.132 0-.259-.053-.354-.146l-2.351-2.351c-.104-.104-.158-.25-.145-.397l.389-4.38c.017-.193.145-.359.327-.425.182-.067.388-.021.524.116l6.341 6.342c.138.138.183.342.116.524s-.232.31-.426.327l-4.379.389-.042.001zm-1.832-3.039l2.021 2.021 3.081-.273-4.828-4.828-.274 3.08z"/></g><path fill="#8899A6" d="M31 32h-3c0-3.314-2.63-6-5.875-6-3.244 0-5.875 2.686-5.875 6H8.73c0-1.104-.895-2-2-2-1.104 0-2 .896-2 2-1.104 0-2 .896-2 2s.896 2 2 2H31c1.104 0 2-.896 2-2s-.896-2-2-2z"/><path fill="#8899A6" d="M20 10v4c3.866 0 7 3.134 7 7s-3.134 7-7 7h-8.485c2.018 2.443 5.069 4 8.485 4 6.075 0 11-4.925 11-11s-4.925-11-11-11z"/><path fill="#67757F" d="M16.414 30.414c-.781.781-2.047.781-2.828 0l-9.899-9.9c-.781-.781-.781-2.047 0-2.828.781-.781 2.047-.781 2.829 0l9.899 9.9c.78.781.78 2.047-.001 2.828zm-7.225-1.786c.547-.077 1.052.304 1.129.851.077.547-.305 1.053-.851 1.129l-5.942.834c-.547.077-1.052-.305-1.129-.851-.077-.547.305-1.053.852-1.13l5.941-.833z"/><path fill="#66757F" d="M27.341 2.98l4.461 4.461-3.806 3.807-4.461-4.461z"/><path fill="#AAB8C2" d="M34.037 7.083c-.827.827-2.17.827-2.997 0l-3.339-3.34c-.827-.826-.827-2.169 0-2.996.827-.826 2.17-.826 2.995 0l3.342 3.34c.826.827.826 2.168-.001 2.996zm-14.56 15.026l-6.802-6.803c-.389-.389-.389-1.025 0-1.414l9.858-9.858c.389-.389 1.025-.389 1.414 0l6.801 6.803c.389.389.389 1.025 0 1.414l-9.858 9.858c-.388.389-1.024.389-1.413 0z"/><path fill="#E1E8ED" d="M13.766 12.8l1.638-1.637 8.216 8.216-1.638 1.637z"/></svg>`,
   nature: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#3E721D" d="M17.68 22s1.937 7.873 1.187 9.373c-2.373 4.746-1.187 4.627 0 4.627h2.373c2.373 0-1.187-14-1.187-14H17.68zM5.255 19.387s-.436 7.993-1.187 9.493C1.695 33.626 1.695 36 2.882 36h2.373c1.186 0 1.187-4.154 1.187-5.34 0-1.187 1.187-8.603 1.187-8.603l-2.374-2.67z"/><path fill="#77B255" d="M12.374 5.251c-2.068.017-4.209-.435-5.523 2.099-1.404 2.709-2.065 8.579.776 9.664 2.479.947 7.933-1.187 13.866 1.187 5.933 2.373 8.306 16.612 13.015 16.63 1.224.005 1.206 1.123.001 1.132-5.914.045-8.509-5.897-9.509-5.897 0 0 1 5.934 0 5.934h-4c-1 0 0-3.081 0-4.268v-1.667s-1.593 1.218-5.936 1.218C11.781 31.284 9 30.066 9 30.066S10 36 9 36H5.255c-1.678 0 .166-4.013 0-5.934-.102-1.182-.51-4.757-1.224-5.933-1.726-2.847-2.763-11.521-1.929-15.285.781-3.526 3.122-6.633 4.675-7.51C8.296.479 9.64-.162 12.968.373c1.775.285 3.591 2.922 2.89 4.274-.421.81-1.94.591-3.484.604z"/><path d="M12.967 2.181c0 .328-.265.593-.593.593-.328 0-.593-.265-.593-.593s.265-.593.593-.593c.328 0 .593.266.593.593z"/><path d="M10.218 18.485c.094.304-.076.626-.38.72-.304.094-.626-.076-.72-.38-.094-.304.076-.626.38-.72.304-.094.626.076.72.38zm3.874 1.248c.134.433-.108.892-.54 1.025-.432.134-.892-.108-1.026-.541-.134-.432.108-.892.541-1.025.432-.133.891.109 1.025.541zm-1.625-1.426c.071.23-.057.474-.288.545-.23.071-.474-.058-.545-.288-.071-.23.058-.474.288-.545.23-.071.474.058.545.288zm2.458-.331c.067.218-.054.448-.272.516-.217.067-.448-.054-.516-.272-.067-.218.054-.448.272-.516.218-.067.449.055.516.272zm2.843.35c.125.402-.101.829-.503.954s-.829-.1-.954-.503c-.125-.402.101-.829.503-.954.403-.125.83.101.954.503zm4.753 1.979c.08.258-.064.531-.322.61-.257.08-.531-.064-.61-.322-.08-.257.064-.531.322-.61.258-.08.531.065.61.322zm-5.854 0c.08.258-.064.531-.322.61-.257.08-.531-.064-.61-.322-.08-.257.064-.531.322-.61.257-.08.531.065.61.322zm4.218-1.306c.08.257-.064.531-.322.61-.257.08-.531-.064-.61-.322s.064-.531.322-.61c.257-.08.531.065.61.322zm-1.501.199c.118.381-.095.785-.476.903s-.785-.095-.903-.476.095-.785.476-.903.785.095.903.476z" fill="#5C913B"/></svg>`
 };
+
+/* ===== FƏRQLİ MÖVZULAR — real məzmun (klik edəndə açılır) ===== */
+const NUMBERS_DATA = [1,2,3,4,5,6,7,8,9,10].map(n=>({n, dots:'⭐'.repeat(n)}));
+
+const ALPHABET_DATA = [
+  {l:'A', word:'Alma', ic:'🍎'}, {l:'B', word:'Balıq', ic:'🐟'}, {l:'C', word:'Cücə', ic:'🐤'},
+  {l:'Ç', word:'Çiçək', ic:'🌸'}, {l:'D', word:'Dovşan', ic:'🐰'}, {l:'E', word:'Ev', ic:'🏠'},
+  {l:'Ə', word:'Əl', ic:'✋'}, {l:'F', word:'Fil', ic:'🐘'}, {l:'G', word:'Gül', ic:'🌷'},
+  {l:'Ğ', word:'(nadir hərf)', ic:'🔤'}, {l:'H', word:'Hinduşka', ic:'🦃'}, {l:'X', word:'Xoruz', ic:'🐓'},
+  {l:'I', word:'Ilıq', ic:'🌡️'}, {l:'İ', word:'İlan', ic:'🐍'}, {l:'J', word:'Jaket', ic:'🧥'},
+  {l:'K', word:'Kitab', ic:'📚'}, {l:'Q', word:'Quş', ic:'🐦'}, {l:'L', word:'Lampa', ic:'💡'},
+  {l:'M', word:'Maşın', ic:'🚗'}, {l:'N', word:'Nar', ic:'🔴'}, {l:'O', word:'Ot', ic:'🌱'},
+  {l:'Ö', word:'Ördək', ic:'🦆'}, {l:'P', word:'Pişik', ic:'🐱'}, {l:'R', word:'Robot', ic:'🤖'},
+  {l:'S', word:'Su', ic:'💧'}, {l:'Ş', word:'Şar', ic:'🎈'}, {l:'T', word:'Top', ic:'⚽'},
+  {l:'U', word:'Uçurtma', ic:'🪁'}, {l:'Ü', word:'Üzüm', ic:'🍇'}, {l:'V', word:'Vulkan', ic:'🌋'},
+  {l:'Y', word:'Yumurta', ic:'🥚'}, {l:'Z', word:'Zürafə', ic:'🦒'}
+];
+
+const MUSIC_DATA = [
+  {title:'Ağ kəpənək', by:'bəst. S. Rüstəmov'}, {title:'Ağacdələn', by:'bəst. Ə. Cavanşirov'},
+  {title:'Ana laylası', by:'bəst. O. Zülfüqarov'}, {title:'Yeni il gəlir', by:'bəst. M. Mirzəyev'},
+  {title:'Yeddi çiçək, yeddi gül', by:'bəst. M. Əlibəyli'}, {title:'Uşaq bağçamız', by:'bəst. N. Qəzənfəroğlu'},
+  {title:'Ala-bula boz keçi', by:'bəst. O. Zülfüqarov'}, {title:'Zənci kuklam', by:'bəst. H. Nəcəfova'},
+  {title:'Xoruz', by:'xalq mahnısı'}, {title:'Quzum', by:'xalq mahnısı'}
+];
+
+const SCIENCE_DATA = [
+  {ic:'🌱', fact:'Bitkilər günəş işığından qida hazırlayır — buna fotosintez deyilir.'},
+  {ic:'🌙', fact:'Ay öz işığını yaymır, Günəşin işığını əks etdirir.'},
+  {ic:'💧', fact:'Suyun 3 halı var: bərk (buz), maye (su) və qaz (buxar).'},
+  {ic:'🧲', fact:'Maqnit dəmiri özünə cəlb edir, amma taxta və plastiki cəlb etmir.'},
+  {ic:'🌈', fact:'Göy qurşağı Günəş işığının yağış damcılarından sınmasından yaranır.'},
+  {ic:'🫀', fact:'Ürəyin döyünməsi bədəndə qanı hərəkət etdirir.'},
+  {ic:'🌍', fact:'Yer öz oxu ətrafında fırlanır — buna görə gecə və gündüz olur.'},
+  {ic:'🦴', fact:'İnsan bədənində 200-dən çox sümük var.'},
+  {ic:'🐝', fact:'Arılar çiçəkdən çiçəyə uçaraq bitkilərin çoxalmasına kömək edir.'},
+  {ic:'❄️', fact:'Hər qar dənəsinin forması unikaldır, heç biri digərinə oxşamır.'}
+];
+
+const NATURE_DATA = [
+  {ic:'🦁', fact:'Aslan "heyvanlar padşahı" adlanır, amma əslində pişik ailəsindəndir.'},
+  {ic:'🦋', fact:'Kəpənəklər əvvəlcə tırtıl olur, sonra çevrilib kəpənəyə dönür.'},
+  {ic:'🐘', fact:'Fillər quru üzərində yaşayan ən böyük heyvanlardır.'},
+  {ic:'🐧', fact:'Pinqvinlər uça bilməz, amma əla üzgüçüdürlər.'},
+  {ic:'🌳', fact:'Ağaclar bizim tənəffüs etdiyimiz oksigeni istehsal edir.'},
+  {ic:'🐢', fact:'Tısbağalar 100 ildən çox yaşaya bilər.'},
+  {ic:'🦉', fact:'Bayquşlar gecə görmə qabiliyyəti çox güclüdür.'},
+  {ic:'🐬', fact:'Delfinlər çox ağıllıdır və bir-biri ilə "danışa" bilir.'},
+  {ic:'🌊', fact:'Xəzər dənizi dünyanın ən böyük gölüdür.'},
+  {ic:'🐿️', fact:'Dələlər qışa hazırlaşmaq üçün qoz-fındıq toplayıb saxlayır.'}
+];
+
+let themeDetail = null;
+function openThemeDetail(key){
+  if(key==='art'){ switchTab('coloring'); return; }
+  themeDetail = key;
+  render();
+}
+function closeThemeDetail(){ themeDetail = null; render(); }
+
+function renderThemeDetail(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  const top = document.createElement('div'); top.className='topbar';
+  top.innerHTML = `<div class="back-btn" onclick="closeThemeDetail()">←</div>${renderLogoHTML()}`;
+  app.appendChild(top);
+
+  const scr = document.createElement('div'); scr.className='screen';
+  const d = document.createElement('div');
+
+  if(themeDetail==='numbers'){
+    d.innerHTML = `<h1 class="headline">🔢 Rəqəmlər 1-10</h1>
+    <p class="sub">Rəqəmi görüb ulduzları sayın!</p>
+    <div class="detail-grid">
+      ${NUMBERS_DATA.map(x=>`<div class="detail-card"><div class="dnum">${x.n}</div><div class="dsub">${x.dots}</div></div>`).join('')}
+    </div>`;
+  } else if(themeDetail==='alphabet'){
+    d.innerHTML = `<h1 class="headline">🔤 Əlifba</h1>
+    <p class="sub">Hər hərf, o hərflə başlayan söz və şəkil.</p>
+    <div class="detail-grid detail-grid-3">
+      ${ALPHABET_DATA.map(x=>`<div class="detail-card"><div class="dletter">${x.l}</div><div class="dic">${x.ic}</div><div class="dsub">${x.word}</div></div>`).join('')}
+    </div>`;
+  } else if(themeDetail==='music'){
+    d.innerHTML = `<h1 class="headline">🎵 Azərbaycan Uşaq Mahnıları</h1>
+    <p class="sub">10 sevimli mahnı adı — özün axtarıb dinlə!</p>
+    <div class="detail-grid">
+      ${MUSIC_DATA.map(x=>`<div class="detail-card"><div class="dic">🎵</div><div class="dtitle">${x.title}</div><div class="dsub">${x.by}</div></div>`).join('')}
+    </div>`;
+  } else if(themeDetail==='science'){
+    d.innerHTML = `<h1 class="headline">🔬 Elm Faktları</h1>
+    <p class="sub">Uşaqlar üçün 10 maraqlı elm faktı.</p>
+    <div class="detail-grid">
+      ${SCIENCE_DATA.map(x=>`<div class="detail-card wide"><div class="dic">${x.ic}</div><div class="dfact">${x.fact}</div></div>`).join('')}
+    </div>`;
+  } else if(themeDetail==='nature'){
+    d.innerHTML = `<h1 class="headline">🦕 Təbiət Faktları</h1>
+    <p class="sub">Heyvanlar və təbiət haqqında 10 fakt.</p>
+    <div class="detail-grid">
+      ${NATURE_DATA.map(x=>`<div class="detail-card wide"><div class="dic">${x.ic}</div><div class="dfact">${x.fact}</div></div>`).join('')}
+    </div>`;
+  }
+  scr.appendChild(d);
+  app.appendChild(scr);
+  appendFooter(app);
+  appendTabBar(app);
+}
 const ICON_SVGS = {
   gamepad: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#31373D" d="M2.13 14.856l-.004-.002S.075 27.271.075 29.061c0 1.824 1.343 3.302 3 3.302.68 0 1.3-.258 1.803-.678l10.166-8.938L2.13 14.856zm31.69 0l.004-.002s2.051 12.417 2.051 14.207c0 1.824-1.343 3.302-3 3.302-.68 0-1.3-.258-1.803-.678l-10.166-8.938 12.914-7.891z"/><g fill="#14171A"><circle cx="25.975" cy="15.551" r="8.5"/><circle cx="9.975" cy="15.551" r="8.5"/><path d="M9.975 7.051h16v16.87h-16z"/></g><circle fill="#14171A" cx="13.075" cy="23.301" r="5"/><circle fill="#14171A" cx="22.875" cy="23.301" r="5"/><circle fill="#67757F" cx="22.875" cy="23.301" r="3"/><circle fill="#67757F" cx="13.075" cy="23.301" r="3"/><circle fill="#FFCC4D" cx="25.735" cy="11.133" r="1.603"/><circle fill="#77B255" cx="25.735" cy="17.607" r="1.603"/><circle fill="#50A5E6" cx="22.498" cy="14.37" r="1.603"/><circle fill="#DD2E44" cx="28.972" cy="14.37" r="1.603"/><path d="M11.148 12.514v-2.168c0-.279-.226-.505-.505-.505H9.085c-.279 0-.505.226-.505.505v2.168l1.284 1.285 1.284-1.285zm-2.569 3.63v2.168c0 .279.226.505.505.505h1.558c.279 0 .505-.226.505-.505v-2.168l-1.284-1.285-1.284 1.285zm5.269-3.1H11.68l-1.285 1.285 1.285 1.285h2.168c.279 0 .505-.227.505-.505V13.55c0-.279-.226-.506-.505-.506zm-5.799 0H5.88c-.279 0-.505.227-.505.505v1.558c0 .279.226.505.505.505h2.168l1.285-1.285-1.284-1.283z" fill="#8899A6"/></svg>`,
   tv: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#31373D" d="M35 31s0 4-4 4H5c-4 0-4-4-4-4V12c0-4 4-4 4-4h26s4 0 4 4v19z"/><path fill="#31373D" d="M21.303 10.389c.391.391.391 1.023 0 1.414s-1.023.391-1.414 0l-9.192-9.192c-.391-.391-.391-1.023 0-1.414s1.023-.391 1.414 0l9.192 9.192z"/><path fill="#31373D" d="M14.697 10.389c-.391.391-.391 1.023 0 1.414s1.023.391 1.414 0l9.192-9.192c.391-.391.391-1.023 0-1.414s-1.023-.391-1.414 0l-9.192 9.192z"/><path fill="#55ACEE" d="M18 11c8 0 10 1 11 2s2 3 2 8-1 7-2 8-3 2-11 2-10-1-11-2-2-3-2-8 1-7 2-8 3-2 11-2z"/><circle fill="#66757F" cx="31.5" cy="31.5" r="1.5"/><circle fill="#66757F" cx="4.5" cy="31.5" r="1.5"/></svg>`,
@@ -742,9 +862,10 @@ function screenThemes(){
   d.innerHTML = `<h1 class="headline">Uşağınızın İnkişafı Üçün Fərqli Mövzular</h1>
   <p class="sub">Oyun vasitəsilə öyrənmə uşaqlar üçün ən effektivdir — yeni məlumat dərhal tətbiq olunanda daha yaxşı yadda qalır.</p>
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
-    ${topics.map(t=>`<div style="background:${t.bg}; border-radius:18px; padding:20px 10px; text-align:center;">
+    ${topics.map(t=>`<div onclick="openThemeDetail('${t.key}')" style="background:${t.bg}; border-radius:18px; padding:20px 10px; text-align:center; cursor:pointer;">
       <div style="width:52px; height:52px; margin:0 auto 8px;">${TOPIC_SVGS[t.key]}</div>
       <div style="font-weight:800; font-size:.9rem; color:var(--ink);">${t.label}</div>
+      <div style="font-size:.68rem; color:var(--ink-soft); font-weight:700; margin-top:2px;">Bax →</div>
     </div>`).join('')}
   </div>
   <p style="font-size:.65rem; color:var(--ink-soft); text-align:center; margin-top:14px; opacity:.7;">İkonlar: Twemoji (CC-BY 4.0)</p>
