@@ -247,6 +247,22 @@ button{font-family:inherit; cursor:pointer; border:none;}
 .detail-card.wide .dic{font-size:2rem; flex-shrink:0;}
 .dtitle{font-weight:800; font-size:.85rem; margin-top:2px;}
 .dfact{font-size:.85rem; font-weight:600; color:var(--ink); line-height:1.4;}
+/* ===== HƏFTƏLİK/AYLIQ/İLLİK PLAN KARTLARI ===== */
+.plan-days-grid{display:flex; flex-direction:column; gap:10px; margin-bottom:18px;}
+.plan-day-card{background:var(--cream); border-radius:14px; padding:14px; border-left:4px solid var(--teal);}
+.plan-day-card.focus{border-left-color:var(--coral); background:#fef3ec;}
+.plan-day-head{display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:.82rem; color:var(--ink-soft); margin-bottom:4px;}
+.plan-badge{background:var(--coral); color:#fff; font-size:.65rem; font-weight:800; padding:2px 8px; border-radius:999px;}
+.plan-day-title{font-weight:800; font-size:.95rem; margin-bottom:3px;}
+.plan-day-how{font-size:.82rem; color:var(--ink-soft); font-weight:600; line-height:1.4;}
+.plan-week-block{margin-bottom:24px;}
+.plan-week-head{font-weight:800; font-size:.95rem; color:var(--bordo,#6A0000); margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid #eee;}
+.plan-month-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.plan-month-card{background:var(--cream); border-radius:14px; padding:12px; border-left:4px solid var(--teal);}
+.plan-month-card.focus{border-left-color:var(--coral); background:#fef3ec;}
+.plan-month-head{display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:.82rem; margin-bottom:4px;}
+.plan-month-domain{font-size:.7rem; font-weight:800; color:var(--teal); margin-bottom:6px;}
+.plan-month-goals{font-size:.75rem; color:var(--ink-soft); font-weight:600; padding-left:16px; line-height:1.5;}
 /* ===== VIDEO MODAL (sayt daxili mahnı oynadıcı) ===== */
 .video-overlay{position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:200; display:flex; align-items:center; justify-content:center; padding:16px; animation:fadeInOverlay .2s ease;}
 @keyframes fadeInOverlay{from{opacity:0;} to{opacity:1;}}
@@ -1065,8 +1081,318 @@ function screenExpert(){
   return d;
 }
 
+
+/* ===== HƏFTƏLİK/AYLIQ/İLLİK PROQRAM GENERATORU ===== */
+const WEEK_DAYS = ['Bazar ertəsi','Çərşənbə axşamı','Çərşənbə','Cümə axşamı','Cümə','Şənbə','Bazar'];
+const MONTH_NAMES = ['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
+
+const TIER_ACTIVITY_POOL = {
+  toddler: {
+    'Nitq': [
+      {a:'Şəkilli kitab oxumaq', how:'Hər səhifədə "bu nədir?" deyə soruşun, uşaq göstərsin.'},
+      {a:'Gündəlik sözləri təkrarlama', how:'"su", "süd", "top" kimi sadə sözləri hər fürsətdə deyin.'},
+      {a:'Mahnı oxumaq', how:'Sadə uşaq mahnıları ilə yeni sözlər öyrədin.'},
+      {a:'Səs təqlidi oyunu', how:'Heyvan səslərini birlikdə təqlid edin (miyav, hav).'},
+      {a:'Bədən hissələrini adlandırma', how:'"Burun haradadır?" deyə soruşub göstərməsini istəyin.'},
+      {a:'Gündəlik fəaliyyəti səsli izah etmə', how:'"İndi əl yuyuruq" deyərək hərəkəti sözlə müşayiət edin.'},
+      {a:'Sadə sual-cavab', how:'"İstəyirsən?" deyə soruşub "hə/yox" cavabını gözləyin.'}
+    ],
+    'Motorika': [
+      {a:'Kubla qüllə qurma', how:'2-3 kubu üst-üstə qoymağı birlikdə öyrədin.'},
+      {a:'Topu yuvarlama', how:'Yerdə oturaraq topu bir-birinizə yuvarladın.'},
+      {a:'Qaşıqla yemək', how:'Öz-özünə qaşıqla yeməyə cəhd etdirin, səbrli olun.'},
+      {a:'Pilləkəndə məşq', how:'Əlindən tutaraq pilləkənə çıxmağı öyrədin.'},
+      {a:'Karandaşla cızma', how:'Böyük vərəqdə sərbəst cızma-qara çəkdirin.'},
+      {a:'Əşyaları qutuya atma', how:'Kiçik oyuncaqları qutuya atmağı öyrədin.'},
+      {a:'Rəqs/hərəkət oyunu', how:'Musiqi ilə birlikdə əl-qol tərpətmək.'}
+    ],
+    'İdrak': [
+      {a:'Gizlətmə oyunu', how:'Oyuncağı örtük altında gizlədib tapdırın.'},
+      {a:'Rəngli əşyaları qruplaşdırma', how:'Eyni rəngli əşyaları bir yerə yığdırın.'},
+      {a:'Formaları tanıma', how:'Dairə, kvadrat formalı oyuncaqları göstərin, adlandırın.'},
+      {a:'Səs çıxaran düymələr', how:'Musiqili oyuncaqla səbəb-nəticəni öyrədin.'},
+      {a:'Şəkilli kartlar', how:'Heyvan şəkillərini göstərib adlarını deyin.'},
+      {a:'Su ilə oynamaq', how:'Fincandan-fincana su tökmə (daim nəzarətlə).'},
+      {a:'Böyük-kiçik müqayisəsi', how:'İki fərqli ölçülü əşyanı müqayisə etdirin.'}
+    ],
+    'Sosial-Emosional': [
+      {a:'Güzgü oyunu', how:'Güzgüdə üz ifadələrini göstərin, təqlid etdirin.'},
+      {a:'Sarılma vaxtı', how:'Gün ərzində bir neçə dəfə isti sarılma verin.'},
+      {a:'"Əlvida" öyrətmək', how:'Əl yelləməyi birlikdə öyrədin.'},
+      {a:'Başqa uşaqla oyun', how:'Qısa müddət başqa körpə ilə birgə oyun təşkil edin.'},
+      {a:'Emosiya adlandırma', how:'"Sən indi şənsən" deyə hissini sözlə adlandırın.'},
+      {a:'Növbə gözləmə', how:'Sadə "mənim növbəm-sənin növbən" oyunu oynayın.'},
+      {a:'Təriflə möhkəmləndirmə', how:'Kiçik nailiyyəti dərhal, konkret təriflə.'}
+    ],
+    'Özünəxidmət': [
+      {a:'Əl yumağı öyrətmə', how:'Addım-addım göstərib təkrarlatdırın.'},
+      {a:'Corab çıxarma', how:'Öz-özünə corab çıxarmağa cəhd etdirin.'},
+      {a:'Qabdan içmə', how:'Kiçik stəkanla su içməyi öyrədin.'},
+      {a:'Oyuncaq yığma', how:'Oyundan sonra 1-2 oyuncağı yerinə qoydurun.'},
+      {a:'Diş fırçalamağa kömək', how:'Fırçanı əlinə verib hərəkəti göstərin.'},
+      {a:'Geyinməyə kömək', how:'Qolunu qolçağa salmağı öyrədin.'},
+      {a:'Yorğunluğu bildirmə', how:'"Yatmaq istəyirsən?" deyə soruşub cavab gözləyin.'}
+    ]
+  },
+  core: {
+    'Nitq': [
+      {a:'Hekayə tamamlama', how:'Hekayənin bir hissəsini deyin, uşaq davam etdirsin.'},
+      {a:'Yeni söz oyunu', how:'Hər gün 1 yeni söz öyrədib bir cümlədə işlədin.'},
+      {a:'Sual-cavab söhbəti', how:'"Bu gün nə etdin?" deyə ətraflı sual verin.'},
+      {a:'Qafiyə tapma', how:'Sadə qafiyəli sözlər tapmaq oyunu oynayın.'},
+      {a:'Şəkil təsviri', how:'Şəkilə baxıb "orda nə var?" sualı ilə təsvir etdirin.'},
+      {a:'Telefon oyunu', how:'Oyuncaq telefonla "zəng edib" danışma oyunu.'},
+      {a:'Gündəlik danışıq', how:'Uşağın öz sözü ilə gün haqda danışmasını istəyin.'}
+    ],
+    'Motorika': [
+      {a:'Qayçı ilə kəsmə', how:'Xətt boyu kağız kəsmə məşqi (uşaq qayçısı ilə).'},
+      {a:'Velosiped/skuter', how:'Balans üzrə açıq havada məşq edin.'},
+      {a:'Düymə bağlama', how:'Köynəkdə düymə taxmağı öyrədin.'},
+      {a:'Top atma-tutma', how:'1-2 metr məsafədən top ötürmə məşqi.'},
+      {a:'İncə naxış çəkmə', how:'Nöqtələri birləşdirərək şəkil çəkdirin.'},
+      {a:'Balans oyunu', how:'Bir ayaq üstə neçə saniyə dura bildiyini sayın.'},
+      {a:'Konstruktor tikmə', how:'Lego və ya bloklarla kiçik tikili qurun.'}
+    ],
+    'İdrak': [
+      {a:'Sayma oyunu', how:'Pilləkən, oyuncaq sayarkən birlikdə ucadan sayın.'},
+      {a:'Tapmaca yığma', how:'6-12 hissəli tapmacanı birlikdə yığın.'},
+      {a:'Rəng-forma uyğunlaşdırma', how:'Eyni rəng/formalı əşyaları uyğunlaşdırın.'},
+      {a:'"Nə çatışmır?" oyunu', how:'3 əşyadan birini gizlədib tapdırın.'},
+      {a:'Sadə toplama', how:'Barmaqla 1+1, 2+1 kimi toplama məşqi.'},
+      {a:'Təsnifat oyunu', how:'Heyvanları/meyvələri kateqoriyalara ayırın.'},
+      {a:'Səbəb-nəticə sualı', how:'"Niyə?" sualları ilə düşünməyə təşviq edin.'}
+    ],
+    'Sosial-Emosional': [
+      {a:'Emosiya kartları', how:'Şəkildəki hissi birlikdə adlandırın.'},
+      {a:'Növbəli oyun', how:'Loto və ya sadə masa oyunu ilə növbə öyrədin.'},
+      {a:'Rollu oyun', how:'"Sən həkim ol, mən xəstə" tipli canlandırma edin.'},
+      {a:'Paylaşma məşqi', how:'Oyuncağı başqası ilə paylaşmağı təşviq edin.'},
+      {a:'Konflikt həlli söhbəti', how:'"Necə barışa bilərik?" sualı ilə yönləndirin.'},
+      {a:'Qrup fəaliyyəti', how:'Bağçadakı/qonşu uşaqlarla birgə oyun təşkil edin.'},
+      {a:'Öz hissini ifadə etmə', how:'"Necə hiss edirsən?" sualını vərdiş halına salın.'}
+    ],
+    'Özünəxidmət': [
+      {a:'Geyinmə məşqi', how:'Öz-özünə geyinməyə tam vaxt verin, tələsdirməyin.'},
+      {a:'Süfrə köməyi', how:'Qab-qacaq yığmağa kömək etdirin.'},
+      {a:'Diş fırçalama nəzarəti', how:'Özü fırçalasın, siz sadəcə yoxlayın.'},
+      {a:'Otaq səliqəsi', how:'Oyuncaqları öz yerinə yığmaq tapşırığı verin.'},
+      {a:'Kiçik tapşırıq', how:'"Bu gün sən..." deyə konkret məsuliyyət verin.'},
+      {a:'Vaxt anlayışı', how:'Vizual cədvəllə gün rejimini göstərin.'},
+      {a:'Tualet müstəqilliyi', how:'Tam müstəqil istifadəni təşviq edin.'}
+    ]
+  },
+  advanced: {
+    'Nitq': [
+      {a:'Kitab oxuma vaxtı', how:'Gündə 15-20 dəqiqə sərbəst oxu təyin edin.'},
+      {a:'Gündəlik yazma', how:'Qısa gündəlik qeyd yazdırın (2-3 cümlə).'},
+      {a:'Debatlı söhbət', how:'Bir mövzuda fikrini əsaslandırmasını istəyin.'},
+      {a:'Yeni termin öyrənmə', how:'Həftədə bir yeni akademik söz öyrədin.'},
+      {a:'Nağıl yazma', how:'Öz uydurduğu qısa hekayəni yazdırın.'},
+      {a:'Təqdimat məşqi', how:'Sevdiyi mövzunu ailəyə "təqdim etsin".'},
+      {a:'Söz ehtiyatı oyunu', how:'Sinonim/antonim tapma oyunu oynayın.'}
+    ],
+    'Motorika': [
+      {a:'Səliqəli xətt yazısı', how:'Əl yazısı məşqi (dəftərdə sətir üzrə).'},
+      {a:'Komanda idmanı', how:'Futbol/basketbol kimi komanda oyununa yönləndirin.'},
+      {a:'İncə tikinti işi', how:'Detallı konstruktor/model tikməyə vaxt verin.'},
+      {a:'Kaligrafiya/rəsm', how:'Detallı rəsm və ya xəttatlıq məşqi edin.'},
+      {a:'Kordinasiya oyunu', how:'İp atlama, tarazlıq oyunları oynadın.'},
+      {a:'Musiqi aləti', how:'Alət çalmağa başlanğıc məşq etdirin (əgər var).'},
+      {a:'Komanda çalışması', how:'Estafet və ya qrup idman oyunu təşkil edin.'}
+    ],
+    'İdrak': [
+      {a:'Riyazi tapmaca', how:'Yaşına uyğun məntiq/riyaziyyat tapmacası verin.'},
+      {a:'Strategiya oyunu', how:'Şahmat, dama kimi strateji oyun oynadın.'},
+      {a:'Layihə əsaslı öyrənmə', how:'Kiçik "tədqiqat" tapşırığı verin (məs. bitki inkişafı).'},
+      {a:'Zaman idarəetməsi', how:'Tapşırıqları planlaşdırmağı öyrədin.'},
+      {a:'Problem həlli ssenarisi', how:'"Əgər... olsa nə edərdin?" sualları verin.'},
+      {a:'Kodlaşdırma əsasları', how:'Sadə məntiq/alqoritm oyunları edin.'},
+      {a:'Elmi təcrübə', how:'Təhlükəsiz kiçik ev təcrübəsi edin (məs. vulkan modeli).'}
+    ],
+    'Sosial-Emosional': [
+      {a:'Emosiya gündəliyi', how:'Gün ərzində hissləri qeyd etməsini istəyin.'},
+      {a:'Komanda layihəsi', how:'Dostları ilə birgə layihə üzərində işlədin.'},
+      {a:'Liderlik tapşırığı', how:'Ailə fəaliyyətində "rəhbər" rolu verin.'},
+      {a:'Konflikt idarəetmə', how:'Real münaqişəni sözlə həll etmə məşqi edin.'},
+      {a:'Empatiya tapşırığı', how:'"Onun yerində olsaydın?" sualı ilə düşündürün.'},
+      {a:'Özünütənzimləmə', how:'Sakitləşmə texnikaları öyrədin (dərin nəfəs).'},
+      {a:'Məsuliyyət söhbəti', how:'Səhvini qəbul etmə vərdişini formalaşdırın.'}
+    ],
+    'Özünəxidmət': [
+      {a:'Gündəlik planlaşdırma', how:'Öz gün rejimini özü tərtib etsin.'},
+      {a:'Məktəb hazırlığı', how:'Çantasını özü yığsın, özü yoxlasın.'},
+      {a:'Kiçik büdcə', how:'Cib pulunu idarə etməyi öyrədin.'},
+      {a:'Ev tapşırığı məsuliyyəti', how:'Müstəqil ev işi verin (məs. yataq düzəltmə).'},
+      {a:'Vaxt idarəsi', how:'Saatla iş/oyun vaxtını bölməyi öyrədin.'},
+      {a:'Özünəqulluq', how:'Geyim seçimi, hazırlığı tam müstəqil etsin.'},
+      {a:'Kömək təşəbbüsü', how:'Ailəyə kömək təklif etməyi təşviq edin.'}
+    ]
+  }
+};
+
+function weightedMonthDomains(weakDomains){
+  // 12 ay üçün sahə paylanması — zəif sahələr daha çox təkrarlanır
+  const strong = DOMAIN_ORDER.filter(d=>!weakDomains.includes(d));
+  let pool = [];
+  weakDomains.forEach(d=>{ pool.push(d,d,d); });
+  strong.forEach(d=>{ pool.push(d,d); });
+  while(pool.length < 12) pool.push(DOMAIN_ORDER[pool.length % DOMAIN_ORDER.length]);
+  pool = pool.slice(0,12);
+  // qarışdırma yerinə ardıcıl saxlayaq ki, məntiqli sıra olsun
+  return pool;
+}
+
+function generateWeekPlan(tier, weakDomains){
+  const pool = TIER_ACTIVITY_POOL[tier];
+  const dayDomains = ['Nitq','Motorika','İdrak','Sosial-Emosional','Özünəxidmət'];
+  const days = [];
+  for(let i=0;i<5;i++){
+    const dom = dayDomains[i];
+    const item = pool[dom][0];
+    days.push({day:WEEK_DAYS[i], domain:dom, ic:DOMAIN_ACTIVITIES[dom].ic, activity:item.a, how:item.how, focus:weakDomains.includes(dom)});
+  }
+  const weakest = weakDomains[0] || dayDomains[0];
+  const wItem = pool[weakest][1] || pool[weakest][0];
+  days.push({day:WEEK_DAYS[5], domain:weakest, ic:DOMAIN_ACTIVITIES[weakest].ic, activity:'Təkrar: '+wItem.a, how:wItem.how, focus:true, special:'Zəif sahə təkrarı'});
+  days.push({day:WEEK_DAYS[6], domain:null, ic:'👨‍👩‍👧', activity:'Ailə vaxtı — sərbəst oyun', how:'Bu gün proqram yoxdur, sadəcə birlikdə əylənin, gəzintiyə çıxın.', special:'Sərbəst gün'});
+  return days;
+}
+
+function generateMonthPlan(tier, weakDomains){
+  const pool = TIER_ACTIVITY_POOL[tier];
+  const dayDomains = ['Nitq','Motorika','İdrak','Sosial-Emosional','Özünəxidmət'];
+  const weeks = [];
+  for(let w=0; w<4; w++){
+    const days = [];
+    for(let i=0;i<5;i++){
+      const dom = dayDomains[i];
+      const item = pool[dom][w+2] || pool[dom][i % pool[dom].length];
+      days.push({day:WEEK_DAYS[i], domain:dom, ic:DOMAIN_ACTIVITIES[dom].ic, activity:item.a, how:item.how, focus:weakDomains.includes(dom)});
+    }
+    const weakest = weakDomains[w % Math.max(weakDomains.length,1)] || dayDomains[w % 5];
+    const wItem = pool[weakest][(w+4) % pool[weakest].length];
+    days.push({day:WEEK_DAYS[5], domain:weakest, ic:DOMAIN_ACTIVITIES[weakest].ic, activity:'Təkrar: '+wItem.a, how:wItem.how, focus:true, special:'Zəif sahə təkrarı'});
+    days.push({day:WEEK_DAYS[6], domain:null, ic:'👨‍👩‍👧', activity:'Ailə vaxtı — sərbəst oyun', how:'Bu gün proqram yoxdur, birlikdə istirahət edin.', special:'Sərbəst gün'});
+    weeks.push({weekNum:w+1, focusDomain: weakDomains[w % Math.max(weakDomains.length,1)] || dayDomains[w], days});
+  }
+  return weeks;
+}
+
+function generateYearPlan(tier, weakDomains){
+  const pool = TIER_ACTIVITY_POOL[tier];
+  const monthDomains = weightedMonthDomains(weakDomains.length?weakDomains:[DOMAIN_ORDER[0]]);
+  return monthDomains.map((dom,i)=>{
+    const items = pool[dom];
+    const goals = [items[i % items.length], items[(i+3) % items.length]];
+    return {
+      month: MONTH_NAMES[i],
+      domain: dom,
+      ic: DOMAIN_ACTIVITIES[dom].ic,
+      focus: weakDomains.includes(dom),
+      goals
+    };
+  });
+}
+
 let planDuration = 'month';
+
 function setDuration(d){ planDuration=d; const app=document.getElementById('app'); app.innerHTML=''; app.appendChild(screenReport()); appendFooter(app); }
+
+function currentReportTier(){ return AGE_TO_TIER[state.age] || 'core'; }
+
+function dayCardHTML(d){
+  return `<div class="plan-day-card ${d.focus?'focus':''}">
+    <div class="plan-day-head"><span>${d.ic} ${d.day}</span>${d.special?`<span class="plan-badge">${d.special}</span>`:(d.focus?`<span class="plan-badge">Fokus sahə</span>`:'')}</div>
+    <div class="plan-day-title">${d.activity}</div>
+    <div class="plan-day-how">${d.how}</div>
+  </div>`;
+}
+
+function renderPlanSection(){
+  const tier = currentReportTier();
+  const scores = computeScores();
+  const weakDomains = DOMAIN_ORDER.filter(d=>scores[d]<60);
+  if(planDuration==='week'){
+    const days = generateWeekPlan(tier, weakDomains);
+    return `<div class="plan-days-grid">${days.map(dayCardHTML).join('')}</div>`;
+  }
+  if(planDuration==='month'){
+    const weeks = generateMonthPlan(tier, weakDomains);
+    return weeks.map(w=>`<div class="plan-week-block">
+      <div class="plan-week-head">📅 ${w.weekNum}-ci həftə — Fokus: ${DOMAIN_ACTIVITIES[w.focusDomain].ic} ${w.focusDomain}</div>
+      <div class="plan-days-grid">${w.days.map(dayCardHTML).join('')}</div>
+    </div>`).join('');
+  }
+  // year
+  const months = generateYearPlan(tier, weakDomains);
+  return `<div class="plan-month-grid">${months.map(m=>`<div class="plan-month-card ${m.focus?'focus':''}">
+    <div class="plan-month-head"><span>${m.ic} ${m.month}</span>${m.focus?'<span class="plan-badge">Fokus</span>':''}</div>
+    <div class="plan-month-domain">${m.domain}</div>
+    <ul class="plan-month-goals">
+      <li>${m.goals[0].a} — ${m.goals[0].how}</li>
+      <li>${m.goals[1].a} — ${m.goals[1].how}</li>
+    </ul>
+  </div>`).join('')}</div>`;
+}
+
+function exportPlanHTML(){
+  const tier = currentReportTier();
+  const scores = computeScores();
+  const weakDomains = DOMAIN_ORDER.filter(d=>scores[d]<60);
+  const tierLabel = TIER_DATA[tier].label;
+
+  const weekDays = generateWeekPlan(tier, weakDomains);
+  const monthWeeks = generateMonthPlan(tier, weakDomains);
+  const yearMonths = generateYearPlan(tier, weakDomains);
+
+  const dayRow = d => `<div style="background:#fbf3e7; border-radius:12px; padding:14px; margin-bottom:10px; border-left:4px solid ${d.focus?'#F4A261':'#2A9D8F'};">
+    <div style="font-weight:800; font-size:.85rem; color:#6A0000;">${d.ic} ${d.day}${d.special?' — '+d.special:''}</div>
+    <div style="font-weight:800; margin-top:4px;">${d.activity}</div>
+    <div style="color:#555; font-size:.9rem; margin-top:2px;">${d.how}</div>
+  </div>`;
+
+  const html = `<!DOCTYPE html><html lang="az"><head><meta charset="UTF-8">
+  <title>UşaqIQ — Fərdi İnkişaf Planı</title>
+  <style>
+    body{font-family:Arial,sans-serif; max-width:800px; margin:0 auto; padding:24px; background:#fff; color:#222;}
+    h1{color:#6A0000;} h2{color:#2A9D8F; border-bottom:2px solid #eee; padding-bottom:8px; margin-top:40px;}
+    h3{color:#D2A55D;}
+    .score-row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;}
+    .month-card{display:inline-block; width:31%; vertical-align:top; background:#fbf3e7; border-radius:10px; padding:12px; margin:1%; box-sizing:border-box;}
+    footer{margin-top:50px; text-align:center; color:#888; font-size:.85rem; border-top:1px solid #eee; padding-top:16px;}
+    @media print{ body{padding:0;} }
+  </style></head><body>
+  <h1>🧸 UşaqIQ — Fərdi İnkişaf Planı</h1>
+  <p><b>Yaş qrupu:</b> ${state.age||'—'} (${tierLabel}) &nbsp; | &nbsp; <b>Tarix:</b> ${new Date().toLocaleDateString('az-AZ')}</p>
+
+  <h2>Sahələr üzrə nəticə</h2>
+  ${DOMAIN_ORDER.map(d=>`<div class="score-row"><span>${DOMAIN_ACTIVITIES[d].ic} ${d}</span><b>${scores[d]}%</b></div>`).join('')}
+
+  <h2>📅 Həftəlik Plan</h2>
+  ${weekDays.map(dayRow).join('')}
+
+  <h2>🗓️ Aylıq Plan (4 həftə)</h2>
+  ${monthWeeks.map(w=>`<h3>${w.weekNum}-ci həftə — Fokus: ${w.focusDomain}</h3>${w.days.map(dayRow).join('')}`).join('')}
+
+  <h2>📆 İllik Plan (12 ay)</h2>
+  <div>${yearMonths.map(m=>`<div class="month-card"><b>${m.ic} ${m.month}</b><br><span style="color:#2A9D8F; font-weight:700; font-size:.85rem;">${m.domain}</span><ul style="font-size:.85rem; padding-left:18px;"><li>${m.goals[0].a}</li><li>${m.goals[1].a}</li></ul></div>`).join('')}</div>
+
+  <h2>🏥 Mütəxəssisə Müraciət</h2>
+  <p>${weakDomains.length?`<b>${weakDomains.join(', ')}</b> sahələrində 3-4 həftə ev tapşırıqlarına baxmayaraq irəliləyiş olmazsa,`:'Hər hansı sahədə geriləmə müşahidə etsəniz,'} <b>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</b> ilə əlaqə saxlayın: <b>+994 55 415 72 15</b></p>
+
+  <footer>Bu sənəd UşaqIQ tətbiqi tərəfindən avtomatik yaradılıb.<br>By s_akhundoff · Instagram: @s_akhundoff · © 2026 Bütün hüquqlar qorunur.</footer>
+  </body></html>`;
+
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `UsaqIQ-Inkisaf-Plani-${state.age||'plan'}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+}
 
 function screenReport(){
   const app = document.createElement('div');
@@ -1093,24 +1419,12 @@ function screenReport(){
     <div style="display:flex; gap:8px; margin:18px 0 22px;">
       ${['week','month','year'].map(d=>`<button class="big-btn ${planDuration===d?'':'outline'}" style="padding:12px; font-size:.82rem;" onclick="setDuration('${d}')">${d==='week'?'Həftəlik':d==='month'?'Aylıq':'İllik'}</button>`).join('')}
     </div>
-    <p class="sub" style="margin-top:-14px;">Seçilmiş plan müddəti: <b>${durLabel}</b> inkişaf proqramı</p>
 
-    <h2 style="font-size:1.15rem; margin:18px 0 14px;">📋 Sahə üzrə ətraflı plan və nümunələr</h2>
-    ${DOMAIN_ORDER.map(d=>{
-      const a = DOMAIN_ACTIVITIES[d];
-      const weak = scores[d] < 60;
-      return `<div class="skill-card" style="border:2px solid ${weak?'#f4b8a0':'#e6e2da'};">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div style="font-weight:800; font-size:1.02rem;">${a.ic} ${d}</div>
-          <div style="font-size:.75rem; font-weight:800; padding:4px 10px; border-radius:999px; background:${weak?'#fde3e3':'#e8f7ee'}; color:${weak?'var(--red)':'var(--green)'};">${weak?'Diqqət tələb olunur':'Yaxşı gedir'}</div>
-        </div>
-        <p style="font-size:.86rem; color:var(--ink-soft); font-weight:600; margin-bottom:12px;">${a.desc}</p>
-        <div style="font-size:.8rem; font-weight:800; margin-bottom:6px;">👨‍👩‍👧 Valideyn üçün ev tapşırıqları:</div>
-        <ul class="bullet-list" style="margin-bottom:0;">
-          ${a.items.map(x=>`<li>${x}</li>`).join('')}
-        </ul>
-      </div>`;
-    }).join('')}
+    <h2 style="font-size:1.15rem; margin:18px 0 6px;">📋 ${durLabel} inkişaf proqramı</h2>
+    <p class="sub" style="margin-top:0;">Yaş qrupuna və test cavablarınıza uyğun, gündəlik/aylıq izahlı plan.</p>
+    <div id="planContent">${renderPlanSection()}</div>
+
+    <button class="big-btn outline" style="margin-top:8px;" onclick="exportPlanHTML()">⬇️ Planı HTML kimi çıxar (yüklə/çap et)</button>
 
     <div style="background:linear-gradient(135deg,var(--bordo,#6A0000),#8C1A1A); color:#fff; border-radius:20px; padding:26px 22px; margin:26px 0 20px; text-align:center;">
       <div style="font-size:2.2rem; margin-bottom:10px;">🏥</div>
