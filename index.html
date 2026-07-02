@@ -1231,15 +1231,21 @@ const TIER_ACTIVITY_POOL = {
 };
 
 function weightedMonthDomains(weakDomains){
-  // 12 ay üçün sahə paylanması — zəif sahələr daha çox təkrarlanır
-  const strong = DOMAIN_ORDER.filter(d=>!weakDomains.includes(d));
-  let pool = [];
-  weakDomains.forEach(d=>{ pool.push(d,d,d); });
-  strong.forEach(d=>{ pool.push(d,d); });
-  while(pool.length < 12) pool.push(DOMAIN_ORDER[pool.length % DOMAIN_ORDER.length]);
-  pool = pool.slice(0,12);
-  // qarışdırma yerinə ardıcıl saxlayaq ki, məntiqli sıra olsun
-  return pool;
+  // 12 ay üçün sahə paylanması — round-robin, HEÇ BİR sahə düşmür
+  const weights = {};
+  DOMAIN_ORDER.forEach(d=>{ weights[d] = weakDomains.includes(d) ? 3 : 2; });
+  const result = [];
+  let safety = 0;
+  while(result.length < 12 && safety < 30){
+    for(const d of DOMAIN_ORDER){
+      if(weights[d] > 0 && result.length < 12){
+        result.push(d);
+        weights[d]--;
+      }
+    }
+    safety++;
+  }
+  return result;
 }
 
 function generateWeekPlan(tier, weakDomains){
