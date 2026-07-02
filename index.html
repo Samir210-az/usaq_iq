@@ -1346,10 +1346,7 @@ function exportPlanHTML(){
   const scores = computeScores();
   const weakDomains = DOMAIN_ORDER.filter(d=>scores[d]<60);
   const tierLabel = TIER_DATA[tier].label;
-
-  const weekDays = generateWeekPlan(tier, weakDomains);
-  const monthWeeks = generateMonthPlan(tier, weakDomains);
-  const yearMonths = generateYearPlan(tier, weakDomains);
+  const durLabel = {week:'Həftəlik', month:'Aylıq (4 həftə)', year:'İllik (12 ay)'}[planDuration];
 
   const dayRow = d => `<div style="background:#fbf3e7; border-radius:12px; padding:14px; margin-bottom:10px; border-left:4px solid ${d.focus?'#F4A261':'#2A9D8F'};">
     <div style="font-weight:800; font-size:.85rem; color:#6A0000;">${d.ic} ${d.day}${d.special?' — '+d.special:''}</div>
@@ -1357,8 +1354,20 @@ function exportPlanHTML(){
     <div style="color:#555; font-size:.9rem; margin-top:2px;">${d.how}</div>
   </div>`;
 
+  let planBody = '';
+  if(planDuration==='week'){
+    const weekDays = generateWeekPlan(tier, weakDomains);
+    planBody = weekDays.map(dayRow).join('');
+  } else if(planDuration==='month'){
+    const monthWeeks = generateMonthPlan(tier, weakDomains);
+    planBody = monthWeeks.map(w=>`<h3>${w.weekNum}-ci həftə — Fokus: ${w.focusDomain}</h3>${w.days.map(dayRow).join('')}`).join('');
+  } else {
+    const yearMonths = generateYearPlan(tier, weakDomains);
+    planBody = `<div>${yearMonths.map(m=>`<div class="month-card"><b>${m.ic} ${m.month}</b><br><span style="color:#2A9D8F; font-weight:700; font-size:.85rem;">${m.domain}</span><ul style="font-size:.85rem; padding-left:18px;"><li>${m.goals[0].a}</li><li>${m.goals[1].a}</li></ul></div>`).join('')}</div>`;
+  }
+
   const html = `<!DOCTYPE html><html lang="az"><head><meta charset="UTF-8">
-  <title>UşaqIQ — Fərdi İnkişaf Planı</title>
+  <title>UşaqIQ — ${durLabel} İnkişaf Planı</title>
   <style>
     body{font-family:Arial,sans-serif; max-width:800px; margin:0 auto; padding:24px; background:#fff; color:#222;}
     h1{color:#6A0000;} h2{color:#2A9D8F; border-bottom:2px solid #eee; padding-bottom:8px; margin-top:40px;}
@@ -1368,20 +1377,14 @@ function exportPlanHTML(){
     footer{margin-top:50px; text-align:center; color:#888; font-size:.85rem; border-top:1px solid #eee; padding-top:16px;}
     @media print{ body{padding:0;} }
   </style></head><body>
-  <h1>🧸 UşaqIQ — Fərdi İnkişaf Planı</h1>
+  <h1>🧸 UşaqIQ — ${durLabel} İnkişaf Planı</h1>
   <p><b>Yaş qrupu:</b> ${state.age||'—'} (${tierLabel}) &nbsp; | &nbsp; <b>Tarix:</b> ${new Date().toLocaleDateString('az-AZ')}</p>
 
   <h2>Sahələr üzrə nəticə</h2>
   ${DOMAIN_ORDER.map(d=>`<div class="score-row"><span>${DOMAIN_ACTIVITIES[d].ic} ${d}</span><b>${scores[d]}%</b></div>`).join('')}
 
-  <h2>📅 Həftəlik Plan</h2>
-  ${weekDays.map(dayRow).join('')}
-
-  <h2>🗓️ Aylıq Plan (4 həftə)</h2>
-  ${monthWeeks.map(w=>`<h3>${w.weekNum}-ci həftə — Fokus: ${w.focusDomain}</h3>${w.days.map(dayRow).join('')}`).join('')}
-
-  <h2>📆 İllik Plan (12 ay)</h2>
-  <div>${yearMonths.map(m=>`<div class="month-card"><b>${m.ic} ${m.month}</b><br><span style="color:#2A9D8F; font-weight:700; font-size:.85rem;">${m.domain}</span><ul style="font-size:.85rem; padding-left:18px;"><li>${m.goals[0].a}</li><li>${m.goals[1].a}</li></ul></div>`).join('')}</div>
+  <h2>${planDuration==='week'?'📅':planDuration==='month'?'🗓️':'📆'} ${durLabel} Plan</h2>
+  ${planBody}
 
   <h2>🏥 Mütəxəssisə Müraciət</h2>
   <p>${weakDomains.length?`<b>${weakDomains.join(', ')}</b> sahələrində 3-4 həftə ev tapşırıqlarına baxmayaraq irəliləyiş olmazsa,`:'Hər hansı sahədə geriləmə müşahidə etsəniz,'} <b>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</b> ilə əlaqə saxlayın: <b>+994 55 415 72 15</b></p>
@@ -1393,7 +1396,7 @@ function exportPlanHTML(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `UsaqIQ-Inkisaf-Plani-${state.age||'plan'}.html`;
+  a.download = `UsaqIQ-${planDuration}-Plani-${state.age||'plan'}.html`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
