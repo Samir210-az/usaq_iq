@@ -726,7 +726,15 @@ function screenEmail(){
   <button class="big-btn" onclick="submitEmail()">Növbəti</button>`;
   return d;
 }
-function submitEmail(){ const v=document.getElementById('emailInput').value; state.email=v; next(); }
+function submitEmail(){
+  const v=document.getElementById('emailInput').value; state.email=v;
+  const scores = computeScores();
+  const vals = Object.values(scores);
+  const avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+  window.sgTrackTest && window.sgTrackTest('UşaqIQ İnkişaf Testi', 'Yaş: '+(state.age||'—')+' · Ortalama: '+avg+'%');
+  window.sgTrackRecord && window.sgTrackRecord('Test tamamlandı','İstifadəçi', v||'—');
+  next();
+}
 
 function screenHowItWorks(){
   const d=document.createElement('div');
@@ -2249,5 +2257,6 @@ function resetColoringTemplate(){ coloringFills = {}; renderColoringApp(); }
 
 render();
 </script>
+<script type="module" src="https://samir210-az.github.io/menyu/analytics.js"></script>
 </body>
 </html>
