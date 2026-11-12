@@ -370,7 +370,7 @@ button{font-family:inherit; cursor:pointer; border:none;}
 </main></noscript>
 
 <script>
-const state = { screen:0, age:null, gender:null, answers:[], email:'' };
+const state = { screen:0, age:null, gender:null, answers:[], tracked:false };
 let appMode = 'funnel';
 const LOGO_LETTERS = ['U','ş','a','q','I','Q'];
 const LOGO_COLORS = ['#2A9D8F','#D2A55D','#F4A261','#6A0000','#2563eb','#d63384'];
@@ -643,8 +643,8 @@ function render(){
   else if(s===quizEnd+1){ scr.appendChild(screenExpert()); }
   else if(s===quizEnd+2){ scr.appendChild(screenAnalysis()); }
   else if(s===quizEnd+3){ scr.appendChild(screenCreating()); }
-  else if(s===quizEnd+4){ scr.appendChild(screenEmail()); }
-  else { app.innerHTML=''; app.appendChild(screenReport()); appendFooter(app); appendTabBar(app); return; }
+  else { if(!state.tracked){ state.tracked = true; trackTestDone(); }
+    app.innerHTML=''; app.appendChild(screenReport()); appendFooter(app); appendTabBar(app); return; }
 
   wrap.appendChild(scr);
   const f=document.createElement('footer');
@@ -753,22 +753,12 @@ function showPopup(){
 }
 function closePopup(){ document.querySelector('.overlay')?.remove(); next(); }
 
-function screenEmail(){
-  const d=document.createElement('div');
-  d.innerHTML = `<h1 class="headline">Uşağınızın tədris planını görmək üçün email daxil edin!</h1>
-  <input class="email-input" type="email" placeholder="email@nümunə.com" id="emailInput">
-  <div class="privacy">🔒 Məxfiliyinizə hörmət edirik və heç vaxt spam göndərmirik. Email yalnız əlaqə üçün qeyd olunur.</div>
-  <button class="big-btn" onclick="submitEmail()">Növbəti</button>`;
-  return d;
-}
-function submitEmail(){
-  const v=document.getElementById('emailInput').value; state.email=v;
+function trackTestDone(){
   const scores = computeScores();
   const vals = Object.values(scores);
   const avg = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
   window.sgTrackTest && window.sgTrackTest('UşaqIQ İnkişaf Testi', 'Yaş: '+(state.age||'—')+' · Ortalama: '+avg+'%');
-  window.sgTrackRecord && window.sgTrackRecord('Test tamamlandı','İstifadəçi', v||'—');
-  next();
+  window.sgTrackRecord && window.sgTrackRecord('Test tamamlandı','İstifadəçi', 'Yaş: '+(state.age||'—'));
 }
 
 function screenHowItWorks(){
