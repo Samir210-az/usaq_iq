@@ -1202,7 +1202,7 @@ async function submitLead(){
   const weak = DOMAIN_ORDER.filter(d=>sc[d]<60);
   try {
     if(!window.uiqLeads) throw new Error('offline');
-    await window.uiqLeads.submit({ name:name, phone:phone, child:child, age:state.age||'', scores:sc, weak:weak });
+    await window.uiqLeads.submit({ name:name, phone:phone, child:child, age:state.age||'', scores:sc, weak:weak.concat(['plan:'+planDuration]) });
     try { localStorage.setItem('uiq_lead_sent','1'); } catch(e){}
     window.sgTrackRecord && window.sgTrackRecord('Tam plan sorğusu','Valideyn','Yaş: '+(state.age||'—'));
     closeLeadForm();
@@ -1379,6 +1379,7 @@ const CONTACTS = {
   samir: { label: 'Samir', show: '055 210 71 11' },
   center: { label: 'Mərkəz', show: '+994 55 415 72 15' }
 };
+let adminDurTouched = false;
 let adminUnsub = null, adminFilter = 'new', adminLeads = [], adminDuration = (function(){ try { return localStorage.getItem('uiq_admin_dur') === 'week' ? 'week' : 'month'; } catch(e){ return 'month'; } })();
 
 function adminContactKey(){
@@ -1408,12 +1409,16 @@ async function sendLeadPlan(lead){
   const age = QUESTION_SETS[lead.age] ? lead.age : '3–4';
   const sc = lead.scores || {};
   DOMAIN_ORDER.forEach(function(d){ if(typeof sc[d] !== 'number') sc[d] = 60; });
+  const rawWeak = Array.isArray(lead.weak) ? lead.weak : [];
+  const mark = rawWeak.filter(function(x){ return String(x).indexOf('plan:') === 0; })[0];
+  const wk = rawWeak.filter(function(x){ return String(x).indexOf('plan:') !== 0; });
+  const dur = (mark && !adminDurTouched) ? mark.slice(5) : adminDuration;
   const html = buildPlanDoc({
-    age: age, scores: sc, weak: Array.isArray(lead.weak) ? lead.weak : [],
-    duration: adminDuration, full: true, name: lead.name, child: lead.child,
+    age: age, scores: sc, weak: wk,
+    duration: dur, full: true, name: lead.name, child: lead.child,
     contact: CONTACTS[adminContactKey()].show
   });
-  const fname = 'UsaqIQ-' + (adminDuration === 'month' ? 'Ayliq' : 'Heftelik') + '-Plan.html';
+  const fname = 'UsaqIQ-' + (dur === 'month' ? 'Ayliq' : 'Heftelik') + '-Plan.html';
   const file = new File([html], fname, { type: 'text/html' });
   const greet = 'Salam, ' + lead.name + '! UşaqIQ testinin nəticələrinə əsasən ' + (lead.child ? lead.child + ' üçün ' : 'uşağınız üçün ') + 'hazırlanmış inkişaf planı əlavə olunub.';
   let shared = false;
@@ -1530,7 +1535,7 @@ function renderAdminBody(email, foreign){
     w.appendChild(s);
     return w;
   };
-  opts.appendChild(sel('Plan', [['week','Həftəlik'],['month','Aylıq']], adminDuration, function(v){ adminDuration = v; try { localStorage.setItem('uiq_admin_dur', v); } catch(e){} }));
+  opts.appendChild(sel('Plan (dəyişsəniz, valideynin seçimini əvəz edir)', [['week','Həftəlik'],['month','Aylıq']], adminDuration, function(v){ adminDuration = v; adminDurTouched = true; try { localStorage.setItem('uiq_admin_dur', v); } catch(e){} }));
   opts.appendChild(sel('Planda əlaqə nömrəsi', [['samir','Samir · ' + CONTACTS.samir.show],['center','Mərkəz · ' + CONTACTS.center.show]], adminContactKey(), function(v){
     try { localStorage.setItem('uiq_contact', v); } catch(e){}
   }));
