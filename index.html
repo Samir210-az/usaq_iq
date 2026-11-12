@@ -1379,7 +1379,7 @@ const CONTACTS = {
   samir: { label: 'Samir', show: '055 210 71 11' },
   center: { label: 'Mərkəz', show: '+994 55 415 72 15' }
 };
-let adminUnsub = null, adminFilter = 'new', adminLeads = [], adminDuration = 'week';
+let adminUnsub = null, adminFilter = 'new', adminLeads = [], adminDuration = (function(){ try { return localStorage.getItem('uiq_admin_dur') === 'week' ? 'week' : 'month'; } catch(e){ return 'month'; } })();
 
 function adminContactKey(){
   try { return localStorage.getItem('uiq_contact') === 'center' ? 'center' : 'samir'; } catch(e){ return 'samir'; }
@@ -1530,7 +1530,7 @@ function renderAdminBody(email, foreign){
     w.appendChild(s);
     return w;
   };
-  opts.appendChild(sel('Plan', [['week','Həftəlik'],['month','Aylıq']], adminDuration, function(v){ adminDuration = v; }));
+  opts.appendChild(sel('Plan', [['week','Həftəlik'],['month','Aylıq']], adminDuration, function(v){ adminDuration = v; try { localStorage.setItem('uiq_admin_dur', v); } catch(e){} }));
   opts.appendChild(sel('Planda əlaqə nömrəsi', [['samir','Samir · ' + CONTACTS.samir.show],['center','Mərkəz · ' + CONTACTS.center.show]], adminContactKey(), function(v){
     try { localStorage.setItem('uiq_contact', v); } catch(e){}
   }));
