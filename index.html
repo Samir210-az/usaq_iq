@@ -2,7 +2,7 @@
 <html lang="az">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UşaqIQ — Uşağınızın fərdi inkişaf planı</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -685,7 +685,7 @@ function computeScores(){
 
 function screenAnalysis(){
   const d=document.createElement('div');
-  d.innerHTML = `<h1 class="headline">🎓 Uşağınızın təhsil proqramı: 100% uyğundur</h1>
+  d.innerHTML = `<h1 class="headline">🎓 Proqram uşağınızın yaşına uyğunlaşdırılır</h1>
   <div class="skill-card">
     <div style="font-weight:800; margin-bottom:14px;">Təkmilləşdirilməli bacarıqlar</div>
     ${skills.map(s=>`<div class="skill-row">
@@ -722,7 +722,7 @@ function screenEmail(){
   const d=document.createElement('div');
   d.innerHTML = `<h1 class="headline">Uşağınızın tədris planını görmək üçün email daxil edin!</h1>
   <input class="email-input" type="email" placeholder="email@nümunə.com" id="emailInput">
-  <div class="privacy">🔒 Məxfiliyinizə hörmət edirik və heç vaxt spam göndərmirik. Tədris planının surətini email vasitəsilə göndərəcəyik.</div>
+  <div class="privacy">🔒 Məxfiliyinizə hörmət edirik və heç vaxt spam göndərmirik. Email yalnız əlaqə üçün qeyd olunur.</div>
   <button class="big-btn" onclick="submitEmail()">Növbəti</button>`;
   return d;
 }
@@ -943,7 +943,7 @@ function screenCertified(){
   </ul>
   <div style="background:linear-gradient(135deg,#e8f1fd,#f0e8fd); border-radius:20px; padding:26px; text-align:center; margin:16px 0 8px;">
     <div style="font-size:2.4rem; margin-bottom:10px;">👨‍👧📖</div>
-    <div style="display:inline-block; background:var(--coral); color:#fff; font-weight:800; font-size:.78rem; padding:6px 16px; border-radius:999px;">🎓 Sertifikatlı Proqram</div>
+    <div style="display:inline-block; background:var(--coral); color:#fff; font-weight:800; font-size:.78rem; padding:6px 16px; border-radius:999px;">🎓 Mütəxəssislər tərəfindən hazırlanıb</div>
   </div>
   <button class="big-btn" onclick="next()">Davam et</button>`;
   return d;
@@ -1085,7 +1085,7 @@ function screenExpert(){
   <div class="expert-card">
     <div class="quote">"</div>
     <p>Hər şey oyunla başlayır. Tətbiqimiz gündəlik sadə tapşırıqlar təklif edir ki, bu da oyunu ${state.age||'2-3'} yaşlı uşaqlar üçün real öyrənməyə çevirir.</p>
-    <div class="expert-who"><div class="av"></div><div><b>Dr. Elmira Rəhimova</b><br><span>Erkən uşaq təhsili üzrə 20+ illik təcrübəli ekspert</span></div></div>
+    <div class="expert-who"><div class="av"></div><div><b>Psixoloq komandası</b><br><span>Uşaq inkişafı üzrə sertifikatlı mütəxəssislər</span></div></div>
   </div>
   <button class="big-btn" onclick="next()">Davam et</button>`;
   return d;
@@ -1358,6 +1358,7 @@ function exportPlanHTML(){
   ${planBody}
 
   <h2>🏥 Mütəxəssisə Müraciət</h2>
+  <p style="font-size:.85rem; color:#666;">Bu hesabat diaqnoz qoymur və mütəxəssis qiymətləndirməsini əvəz etmir.</p>
   <p>${weakDomains.length?`<b>${weakDomains.join(', ')}</b> sahələrində 3-4 həftə ev tapşırıqlarına baxmayaraq irəliləyiş olmazsa,`:'Hər hansı sahədə geriləmə müşahidə etsəniz,'} <b>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</b> ilə əlaqə saxlayın: <b>+994 55 415 72 15</b></p>
 
   <footer>Bu sənəd UşaqIQ tətbiqi tərəfindən avtomatik yaradılıb.<br><a href="https://aze-ai.az" style="color:#D2A55D; text-decoration:none; font-weight:700;">By securtiy_group</a><br>© 2026 Bütün hüquqlar qorunur.</footer>
@@ -1419,7 +1420,7 @@ function screenReport(){
       <p style="text-align:center; color:rgba(255,255,255,.85); font-weight:800; font-size:.85rem; margin-top:10px;">+994 55 415 72 15</p>
     </div>
 
-    <div class="counter-box" style="justify-content:center;">📄 Bu hesabat email ünvanınıza da göndərildi</div>
+    <div class="counter-box" style="justify-content:center;">ℹ️ Bu test skrininq xarakterlidir və diaqnoz qoymur. Narahatlıq varsa mütəxəssisə müraciət edin.</div>
 
     <div style="background:linear-gradient(135deg,#2563eb,#1d4ed8); border-radius:20px; padding:24px 22px; margin-top:20px; text-align:center;">
       <div style="font-size:2rem; margin-bottom:8px;">🎮</div>
