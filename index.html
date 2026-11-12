@@ -1392,11 +1392,10 @@ function renderPlanSection(){
   </div>` + planLockHTML(total-FREE_DAYS);
 }
 
-function exportPlanHTML(){
-  const age = currentReportAge();
-  const scores = computeScores();
-  const weakDomains = DOMAIN_ORDER.filter(d=>scores[d]<60);
-  const durLabel = {week:'Həftəlik', month:'Aylıq (4 həftə)'}[planDuration];
+function buildPlanDoc(o){
+  const age = o.age, scores = o.scores, weakDomains = o.weak, duration = o.duration, full = o.full;
+  const durLabel = {week:'Həftəlik', month:'Aylıq (4 həftə)'}[duration];
+  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   const dayRow = d => `<div style="background:#fbf3e7; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid ${d.focus?'#F4A261':'#2A9D8F'};">
     <div style="font-weight:800; font-size:.85rem; color:#6A0000;">${d.ic} ${d.day}${d.special?' — '+d.special:''}</div>
@@ -1407,13 +1406,16 @@ function exportPlanHTML(){
   </div>`;
 
   let planBody = '';
-  if(planDuration==='week'){
-    planBody = generateWeekPlan(age, weakDomains).slice(0, FREE_DAYS).map(dayRow).join('');
+  if(duration==='week'){
+    const wd = generateWeekPlan(age, weakDomains);
+    planBody = (full ? wd : wd.slice(0, FREE_DAYS)).map(dayRow).join('');
+  } else if(full){
+    planBody = generateMonthPlan(age, weakDomains).map(w=>`<h3>${w.weekNum}-ci həftə — Fokus: ${w.focusDomain}</h3>${w.days.map(dayRow).join('')}`).join('');
   } else {
     const first = generateMonthPlan(age, weakDomains)[0];
     planBody = `<h3>${first.weekNum}-ci həftə — Fokus: ${first.focusDomain}</h3>${first.days.slice(0,FREE_DAYS).map(dayRow).join('')}`;
   }
-  planBody += `<p style="background:#fbf3e7; padding:14px; border-radius:12px; font-weight:700;">🔒 Tam plan pulsuz verilir. Almaq üçün UşaqIQ-da "Tam planı pulsuz al" düyməsini basın və ya mərkəzə zəng edin: <b>+994 55 415 72 15</b></p>`;
+  if(!full) planBody += `<p style="background:#fbf3e7; padding:14px; border-radius:12px; font-weight:700;">🔒 Tam plan pulsuz verilir. Almaq üçün UşaqIQ-da "Tam planı pulsuz al" düyməsini basın və ya mərkəzə zəng edin: <b>+994 55 415 72 15</b></p>`;
 
   const html = `<!DOCTYPE html><html lang="az"><head><meta charset="UTF-8">
   <title>UşaqIQ — ${durLabel} İnkişaf Planı</title>
@@ -1426,21 +1428,27 @@ function exportPlanHTML(){
     @media print{ body{padding:0;} }
   </style></head><body>
   <h1>🧸 UşaqIQ — ${durLabel} İnkişaf Planı</h1>
-  <p><b>Yaş qrupu:</b> ${state.age||'—'} &nbsp; | &nbsp; <b>Tarix:</b> ${new Date().toLocaleDateString('az-AZ')}</p>
+  <p>${o.name?`<b>Hazırlanıb:</b> ${esc(o.name)}${o.child?' (uşaq: '+esc(o.child)+')':''} &nbsp; | &nbsp; `:''}<b>Yaş qrupu:</b> ${esc(o.age)||'—'} &nbsp; | &nbsp; <b>Tarix:</b> ${new Date().toLocaleDateString('az-AZ')}</p>
 
   <h2>Sahələr üzrə nəticə</h2>
   ${DOMAIN_ORDER.map(d=>`<div class="score-row"><span>${DOMAIN_ACTIVITIES[d].ic} ${d}</span><b>${scores[d]}%</b></div>`).join('')}
 
-  <h2>${planDuration==='week'?'📅':'🗓️'} ${durLabel} Plan</h2>
+  <h2>${duration==='week'?'📅':'🗓️'} ${durLabel} Plan</h2>
   ${planBody}
 
   <h2>🏥 Mütəxəssisə Müraciət</h2>
   <p style="font-size:.85rem; color:#666;">Bu hesabat diaqnoz qoymur və mütəxəssis qiymətləndirməsini əvəz etmir.</p>
-  <p>${weakDomains.length?`<b>${weakDomains.join(', ')}</b> sahələrində 3-4 həftə ev tapşırıqlarına baxmayaraq irəliləyiş olmazsa,`:'Hər hansı sahədə geriləmə müşahidə etsəniz,'} <b>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</b> ilə əlaqə saxlayın: <b>+994 55 415 72 15</b></p>
+  <p>${weakDomains.length?`<b>${weakDomains.join(', ')}</b> sahələrində 3-4 həftə ev tapşırıqlarına baxmayaraq irəliləyiş olmazsa,`:'Hər hansı sahədə geriləmə müşahidə etsəniz,'} <b>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</b> ilə əlaqə saxlayın: <b>${o.contact||'+994 55 415 72 15'}</b></p>
 
   <footer>Bu sənəd UşaqIQ tətbiqi tərəfindən avtomatik yaradılıb.<br><a href="https://aze-ai.az" style="color:#D2A55D; text-decoration:none; font-weight:700;">By securtiy_group</a><br>© 2026 Bütün hüquqlar qorunur.</footer>
   </body></html>`;
 
+  return html;
+}
+
+function exportPlanHTML(){
+  const sc = computeScores();
+  const html = buildPlanDoc({ age: currentReportAge(), scores: sc, weak: DOMAIN_ORDER.filter(d=>sc[d]<60), duration: planDuration, full: false });
   const blob = new Blob([html], {type:'text/html'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1547,39 +1555,35 @@ function adminToast(msg){
   setTimeout(function(){ t.remove(); }, 3500);
 }
 
-function buildPlanText(lead, duration){
-  const age = AGE_ACTIVITY_POOL[lead.age] ? lead.age : '3–4';
-  const weak = Array.isArray(lead.weak) ? lead.weak : [];
-  const dayText = function(d){
-    return d.ic + ' ' + d.day + ' — ' + d.activity + '\n💡 ' + d.why + '\nNecə: ' + d.how + '\nNümunə: ' + d.example;
-  };
-  let body;
-  if(duration === 'month'){
-    body = generateMonthPlan(age, weak).map(function(w){
-      return '📅 ' + w.weekNum + '-ci həftə — Fokus: ' + w.focusDomain + '\n\n' + w.days.map(dayText).join('\n\n');
-    }).join('\n\n———\n\n');
-  } else {
-    body = generateWeekPlan(age, weak).map(dayText).join('\n\n');
-  }
-  const c = CONTACTS[adminContactKey()];
-  const hello = 'Salam' + (lead.name ? ', ' + lead.name : '') + '! UşaqIQ testinin nəticələrinə əsasən ' + (lead.child ? lead.child + ' üçün ' : 'uşağınız üçün ') + (duration === 'month' ? 'aylıq' : 'həftəlik') + ' inkişaf planı:';
-  const foot = 'Bu plan diaqnoz qoymur, yalnız ev şəraitində dəstək üçün təklifdir.\n\nAN Psixoloji Dəstək və Reabilitasiya Mərkəzi, Bakı.\nSual və məsləhət üçün: ' + c.show;
-  return hello + '\n\n' + body + '\n\n' + foot;
-}
-
 async function sendLeadPlan(lead){
-  const text = buildPlanText(lead, adminDuration);
-  const base = 'https://wa.me/' + lead.phone;
-  const url = base + '?text=' + encodeURIComponent(text);
-  if(url.length <= 3500){
-    window.open(url, '_blank', 'noopener');
-  } else {
-    let copy = null;
-    try { copy = navigator.clipboard.writeText(text); } catch(e){}
-    window.open(base, '_blank', 'noopener');
-    let ok = false;
-    try { if(copy){ await copy; ok = true; } } catch(e){}
-    adminToast(ok ? 'Plan kopyalandı. WhatsApp-da yapışdırıb göndərin.' : 'Kopyalamaq alınmadı. Həftəlik planı seçin.');
+  const age = AGE_ACTIVITY_POOL[lead.age] ? lead.age : '3–4';
+  const sc = lead.scores || {};
+  DOMAIN_ORDER.forEach(function(d){ if(typeof sc[d] !== 'number') sc[d] = 60; });
+  const html = buildPlanDoc({
+    age: age, scores: sc, weak: Array.isArray(lead.weak) ? lead.weak : [],
+    duration: adminDuration, full: true, name: lead.name, child: lead.child,
+    contact: CONTACTS[adminContactKey()].show
+  });
+  const fname = 'UsaqIQ-' + (adminDuration === 'month' ? 'Ayliq' : 'Heftelik') + '-Plan.html';
+  const file = new File([html], fname, { type: 'text/html' });
+  const greet = 'Salam, ' + lead.name + '! UşaqIQ testinin nəticələrinə əsasən ' + (lead.child ? lead.child + ' üçün ' : 'uşağınız üçün ') + 'hazırlanmış inkişaf planı əlavə olunub.';
+  let shared = false;
+  try {
+    if(navigator.canShare && navigator.canShare({ files: [file] })){
+      await navigator.share({ files: [file], text: greet });
+      shared = true;
+    }
+  } catch(e){
+    if(e && e.name === 'AbortError') return;
+  }
+  if(!shared){
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url; a.download = fname;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 3000);
+    window.open('https://wa.me/' + lead.phone + '?text=' + encodeURIComponent(greet), '_blank', 'noopener');
+    adminToast('Fayl yükləndi. WhatsApp-da skrepka ilə əlavə edin.');
   }
   try { await window.uiqLeads.setStatus(lead.id, 'sent'); lead.status = 'sent'; renderAdminList(); } catch(e){ adminToast('Status yenilənmədi.'); }
 }
@@ -1678,11 +1682,11 @@ function renderAdminBody(email, foreign){
     return w;
   };
   opts.appendChild(sel('Plan', [['week','Həftəlik'],['month','Aylıq']], adminDuration, function(v){ adminDuration = v; }));
-  opts.appendChild(sel('Mesajda əlaqə nömrəsi', [['samir','Samir · ' + CONTACTS.samir.show],['center','Mərkəz · ' + CONTACTS.center.show]], adminContactKey(), function(v){
+  opts.appendChild(sel('Planda əlaqə nömrəsi', [['samir','Samir · ' + CONTACTS.samir.show],['center','Mərkəz · ' + CONTACTS.center.show]], adminContactKey(), function(v){
     try { localStorage.setItem('uiq_contact', v); } catch(e){}
   }));
   body.appendChild(opts);
-  body.appendChild(el('p', 'font-size:.74rem; color:#667085; font-weight:600; margin-bottom:12px; line-height:1.4;', 'Mesaj WhatsApp-ın açıldığı telefonda daxil olmuş nömrədən gedir. Seçim yalnız mesajın sonundakı əlaqə nömrəsini dəyişir.'));
+  body.appendChild(el('p', 'font-size:.74rem; color:#667085; font-weight:600; margin-bottom:12px; line-height:1.4;', 'Fayl paylaşma menyusundan WhatsApp seçilir və telefonda daxil olmuş nömrədən gedir. Seçim yalnız planın sonundakı əlaqə nömrəsini dəyişir.'));
   const list = el('div'); list.id = 'adminList';
   body.appendChild(list);
   const out = el('button', 'width:100%; margin-top:8px; padding:12px; border-radius:12px; background:#f3f4f6; font-weight:800; border:0;', 'Çıxış (' + email + ')');
