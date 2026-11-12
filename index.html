@@ -383,6 +383,10 @@ button{font-family:inherit; cursor:pointer; border:none;}
 <script src="plans-3-4.js"></script>
 <script src="plans-5-6.js"></script>
 <script src="plans-7.js"></script>
+<script src="plans-ext-1-2.js"></script>
+<script src="plans-ext-3-4.js"></script>
+<script src="plans-ext-5-6.js"></script>
+<script src="plans-ext-7.js"></script>
 <script src="plans.js"></script>
 <script>
 const state = { screen:0, age:null, gender:null, answers:[], tracked:false };
@@ -1105,10 +1109,15 @@ function dayCardHTML(d){
   return `<div class="plan-day-card ${d.focus?'focus':''}">
     <div class="plan-day-head"><span>${e3d(d.ic,(d.day||'').length,26)} ${d.day}</span>${d.special?`<span class="plan-badge">${d.special}</span>`:''}</div>
     <div class="plan-day-title">${d.activity}</div>
+    ${d.plain?`<div class="plan-day-example"><b>Sadə dillə:</b> ${d.plain}</div>`:''}
+    ${d.materials?`<div class="plan-day-example"><b>Nə lazımdır:</b> ${d.materials}</div>`:''}
     <div class="plan-day-how"><b>Necə edilir:</b><ol style="margin:6px 0 0 18px; padding:0;">${steps}</ol></div>
+    ${d.example?`<div class="plan-day-example"><b>Nümunə:</b> ${d.example}</div>`:''}
+    ${d.mistakes?`<div class="plan-day-example"><b>Tez-tez edilən səhvlər:</b> ${d.mistakes}</div>`:''}
     <div class="plan-day-why">💡 ${d.why}</div>
     ${d.sign?`<div class="plan-day-example"><b>İrəliləyiş göstəricisi:</b> ${d.sign}</div>`:''}
     ${d.up?`<div class="plan-day-example"><b>Növbəti addım:</b> ${d.up}</div>`:''}
+    ${d.refer?`<div class="plan-day-example"><b>Mütəxəssisə nə vaxt müraciət etməli:</b> ${d.refer}</div>`:''}
   </div>`;
 }
 
@@ -1242,10 +1251,15 @@ function buildPlanDoc(o){
   const dayRow = d => `<div style="background:#fbf3e7; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid ${d.focus?'#F4A261':'#2A9D8F'};">
     <div style="font-weight:800; font-size:.85rem; color:#6A0000;">${d.ic} ${d.day}${d.special?' — '+d.special:''}</div>
     <div style="font-weight:800; font-size:1.05rem; margin-top:4px;">${d.activity}</div>
+    ${d.plain?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Sadə dillə:</b> ${d.plain}</div>`:''}
+    ${d.materials?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Nə lazımdır:</b> ${d.materials}</div>`:''}
     <div style="color:#333; font-size:.9rem; margin-top:6px;"><b>Necə edilir:</b><ol style="margin:6px 0 0 18px; padding:0;">${(d.steps||[]).map(x=>'<li style="margin-bottom:4px;">'+x+'</li>').join('')}</ol></div>
+    ${d.example?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Nümunə:</b> ${d.example}</div>`:''}
+    ${d.mistakes?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Tez-tez edilən səhvlər:</b> ${d.mistakes}</div>`:''}
     <div style="color:#2A9D8F; font-size:.85rem; margin-top:6px; font-style:italic;">💡 ${d.why}</div>
     ${d.sign?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>İrəliləyiş göstəricisi:</b> ${d.sign}</div>`:''}
     ${d.up?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Növbəti addım:</b> ${d.up}</div>`:''}
+    ${d.refer?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Mütəxəssisə nə vaxt müraciət etməli:</b> ${d.refer}</div>`:''}
   </div>`;
   const fr = PLANS.frame(age, scores);
 

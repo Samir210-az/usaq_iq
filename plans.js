@@ -73,16 +73,29 @@ function module(age, dom, score){
   var set = window.PLANS_MOD && window.PLANS_MOD[age] && window.PLANS_MOD[age][dom];
   if(!set) return null;
   var b = band(score);
-  return { band: b, label: FRAMES[b - 1].n, m: set[b - 1] };
+  var base = set[b - 1];
+  var ext = window.PLANS_EXT && window.PLANS_EXT[age] && window.PLANS_EXT[age][dom] && window.PLANS_EXT[age][dom][b - 1];
+  var m = {};
+  for(var k in base) m[k] = base[k];
+  if(ext) for(var j in ext) m[j] = ext[j];
+  return { band: b, label: FRAMES[b - 1].n, m: m };
 }
 
 function dayCard(day, dom, mod, opts){
   opts = opts || {};
   var steps = mod.m.s.slice();
   if(opts.cut) steps = steps.slice(0, opts.cut);
-  return { day: day, domain: dom, ic: ICONS[dom], activity: mod.m.t, why: mod.m.w, steps: steps,
+  var card = { day: day, domain: dom, ic: ICONS[dom], activity: mod.m.t, why: mod.m.w, steps: steps,
            sign: mod.m.g, up: opts.up ? mod.m.u : '', focus: mod.band <= 3,
            special: opts.badge || (mod.band <= 3 ? 'Fokus sahə' : '') };
+  if(opts.rich){
+    card.plain = mod.m.e || '';
+    card.example = mod.m.x || '';
+    card.mistakes = mod.m.k || '';
+    card.materials = mod.m.m || '';
+  }
+  if(opts.rich || opts.refer) card.refer = mod.m.r || '';
+  return card;
 }
 
 function weakestOrder(scores){
@@ -98,11 +111,11 @@ function week(age, scores){
   var days = [];
   DOMS.forEach(function(d, i){
     var m = module(age, d, scores[d]);
-    days.push(dayCard(DAYS[i], d, m, {}));
+    days.push(dayCard(DAYS[i], d, m, { rich: true }));
   });
   var worst = weakestOrder(scores)[0];
   var wm = module(age, worst, scores[worst]);
-  days.push(dayCard(DAYS[5], worst, wm, { up: true, badge: 'Zəif sahə təkrarı' }));
+  days.push(dayCard(DAYS[5], worst, wm, { up: true, refer: true, badge: 'Zəif sahə təkrarı' }));
   days[5].activity = 'Təkrar: ' + wm.m.t;
   days.push(familyDay(DAYS[6], 'Ailə vaxtı və həftənin yekunu', [
     'Uşaqla 30–40 dəqiqə sərbəst oyun: seçimi o etsin, siz təlim etməyin.',
@@ -127,11 +140,11 @@ function month(age, scores){
     var days = [];
     DOMS.forEach(function(d, i){
       var m = module(age, d, scores[d]);
-      days.push(dayCard(DAYS[i], d, m, { cut: st.cut, up: st.up }));
+      days.push(dayCard(DAYS[i], d, m, { cut: st.cut, up: st.up, rich: w === 0, refer: w === 3 }));
     });
     var focus = (w % 2 === 1 && band(scores[order[1]]) <= 4) ? order[1] : order[0];
     var fm = module(age, focus, scores[focus]);
-    var sat = dayCard(DAYS[5], focus, fm, { up: true, badge: 'Zəif sahə təkrarı' });
+    var sat = dayCard(DAYS[5], focus, fm, { up: true, rich: w === 0, refer: w === 3, badge: 'Zəif sahə təkrarı' });
     sat.activity = 'Təkrar: ' + fm.m.t;
     days.push(sat);
     days.push(familyDay(DAYS[6], 'Ailə vaxtı və həftənin yekunu', [
