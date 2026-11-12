@@ -1418,7 +1418,8 @@ async function sendLeadPlan(lead){
     duration: dur, full: true, name: lead.name, child: lead.child,
     contact: CONTACTS[adminContactKey()].show
   });
-  const fname = 'UsaqIQ-' + (dur === 'month' ? 'Ayliq' : 'Heftelik') + '-Plan.html';
+  const slug = String(lead.child || lead.name || '').replace(/[əƏ]/g,'e').replace(/[ıI]/g,'i').replace(/İ/g,'I').replace(/[öÖ]/g,'o').replace(/[üÜ]/g,'u').replace(/[çÇ]/g,'c').replace(/[şŞ]/g,'s').replace(/[ğĞ]/g,'g').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  const fname = 'UsaqIQ-' + (slug ? slug + '-' : '') + (dur === 'month' ? 'Ayliq' : 'Heftelik') + '-Plan.html';
   const file = new File([html], fname, { type: 'text/html' });
   const greet = 'Salam, ' + lead.name + '! UşaqIQ testinin nəticələrinə əsasən ' + (lead.child ? lead.child + ' üçün ' : 'uşağınız üçün ') + 'hazırlanmış inkişaf planı əlavə olunub.';
   let shared = false;
