@@ -164,7 +164,7 @@ button{font-family:inherit; cursor:pointer; border:none;}
 .expert-card .quote{font-size:2.2rem; color:var(--blue); opacity:.4; line-height:0;}
 .expert-card p{font-weight:700; font-size:.98rem; margin:10px 0 18px;}
 .expert-who{display:flex; align-items:center; gap:12px;}
-.expert-who .av{width:48px; height:48px; border-radius:50%; background:#ccd; }
+.expert-who .av{width:48px; height:48px; border-radius:50%; background:#ccd; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex:none; }
 .expert-who b{font-size:.92rem;} .expert-who span{font-size:.8rem; color:var(--ink-soft); font-weight:700;}
 
 .email-input{width:100%; padding:16px; border:2px solid #e3e6ec; border-radius:12px; font-size:1rem; margin-bottom:14px; font-family:inherit;}
@@ -957,15 +957,15 @@ function screenThemes(){
 
 function screenCertified(){
   const d=document.createElement('div');
-  d.innerHTML = `<h1 class="headline">Sertifikatlı Ekspertlər Tərəfindən Hazırlanıb</h1>
+  d.innerHTML = `<h1 class="headline">AN Mərkəzinin təcrübəsinə əsaslanır</h1>
   <ul class="bullet-list">
-    <li>Beynəlxalq erkən təhsil standartlarına uyğun hazırlanıb</li>
-    <li>Uşaq inkişafı üzrə təcrübəli psixoloqlar tərəfindən yaradılıb</li>
-    <li>ABŞ və Avropa təhsil çərçivələrinə uyğundur</li>
+    <li>Uşaq inkişafı ilə işləyən mərkəzin təcrübəsindən çıxış edir</li>
+    <li>5 inkişaf sahəsi üzrə sadə və aydın sorğu</li>
+    <li>Nəticəyə görə günlər üzrə konkret plan</li>
   </ul>
   <div style="background:linear-gradient(135deg,#e8f1fd,#f0e8fd); border-radius:20px; padding:26px; text-align:center; margin:16px 0 8px;">
     <div style="font-size:2.4rem; margin-bottom:10px;">👨‍👧📖</div>
-    <div style="display:inline-block; background:var(--coral); color:#fff; font-weight:800; font-size:.78rem; padding:6px 16px; border-radius:999px;">🎓 Mütəxəssislər tərəfindən hazırlanıb</div>
+    <div style="display:inline-block; background:var(--coral); color:#fff; font-weight:800; font-size:.78rem; padding:6px 16px; border-radius:999px;">🎓 AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</div>
   </div>
   <button class="big-btn" onclick="next()">Davam et</button>`;
   return d;
@@ -1069,16 +1069,16 @@ function screenReviews(){
 
 function screenExpert(){
   const d=document.createElement('div');
-  d.innerHTML = `<h1 class="headline">Sertifikatlı ekspertlər tərəfindən hazırlanıb</h1>
+  d.innerHTML = `<h1 class="headline">Planınız necə hazırlanır</h1>
   <ul class="bullet-list">
-    <li>Erkən uşaq təhsili mütəxəssisləri tərəfindən yaradılıb</li>
-    <li>Uşaq inkişafı üzrə təcrübəli psixoloqlar tərəfindən hazırlanıb</li>
-    <li>Valideynlər üçün sadə dildə hazırlanıb</li>
+    <li>Hər sahənin nəticəsi ayrıca qiymətləndirilir</li>
+    <li>Zəif sahələrə daha çox diqqət ayrılır</li>
+    <li>Hər gün üçün addım-addım təlimat verilir</li>
   </ul>
   <div class="expert-card">
     <div class="quote">"</div>
     <p>Hər şey oyunla başlayır. Tətbiqimiz gündəlik sadə tapşırıqlar təklif edir ki, bu da oyunu ${state.age||'2-3'} yaşlı uşaqlar üçün real öyrənməyə çevirir.</p>
-    <div class="expert-who"><div class="av"></div><div><b>Psixoloq komandası</b><br><span>Uşaq inkişafı üzrə sertifikatlı mütəxəssislər</span></div></div>
+    <div class="expert-who"><div class="av">🧑‍⚕️</div><div><b>AN Psixoloji Mərkəzi</b><br><span>Uşaq inkişafı və reabilitasiya</span></div></div>
   </div>
   <button class="big-btn" onclick="next()">Davam et</button>`;
   return d;
