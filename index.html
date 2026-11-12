@@ -128,6 +128,10 @@ button{font-family:inherit; cursor:pointer; border:none;}
 .counter-box{display:flex; align-items:center; gap:10px; background:#f4f5f8; padding:12px 16px; border-radius:12px; font-weight:800; font-size:.92rem; margin-top:16px;}
 .counter-box .num{color:var(--blue); font-size:1.1rem;}
 
+.e3d{--z:44px; position:relative; display:inline-flex; align-items:center; justify-content:center; flex:none; vertical-align:middle; width:var(--z); height:var(--z); border-radius:calc(var(--z)*.3); font-size:calc(var(--z)*.55); line-height:1; background:linear-gradient(150deg,var(--a),var(--b)); box-shadow:0 calc(var(--z)*.14) calc(var(--z)*.24) var(--s), inset 0 2px 3px rgba(255,255,255,.7), inset 0 -3px 5px rgba(0,0,0,.2);}
+.e3d::before{content:''; position:absolute; left:10%; right:10%; top:5%; height:42%; border-radius:calc(var(--z)*.26) calc(var(--z)*.26) calc(var(--z)*.5) calc(var(--z)*.5); background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0)); pointer-events:none;}
+.e3d>*{position:relative; filter:drop-shadow(0 2px 2px rgba(0,0,0,.28));}
+.e3d svg{width:62%; height:62%;}
 .i3d-row{display:flex; justify-content:center; gap:16px; margin:6px 0 26px;}
 .i3d{position:relative; width:78px; height:78px; border-radius:24px; display:flex; align-items:center; justify-content:center; font-size:2.3rem; background:linear-gradient(150deg,var(--a),var(--b)); box-shadow:0 12px 20px var(--s), inset 0 3px 5px rgba(255,255,255,.7), inset 0 -5px 8px rgba(0,0,0,.2); animation:emojiPop .5s cubic-bezier(.34,1.56,.64,1) both;}
 .i3d::before{content:''; position:absolute; left:10%; right:10%; top:5%; height:42%; border-radius:20px 20px 40px 40px; background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0));}
@@ -388,9 +392,9 @@ function appendTabBar(container){
   const t = document.createElement('div');
   t.className = 'tab-bar';
   t.innerHTML = `
-    <div class="tab-item ${appMode==='funnel'?'active':''}" onclick="switchTab('funnel')"><span class="ic">🧪</span>Test</div>
-    <div class="tab-item ${appMode==='games'?'active':''}" onclick="switchTab('games')"><span class="ic">🎮</span>Oyunlar</div>
-    <div class="tab-item ${appMode==='coloring'?'active':''}" onclick="switchTab('coloring')"><span class="ic">🖍️</span>Rəngləmə</div>
+    <div class="tab-item ${appMode==='funnel'?'active':''}" onclick="switchTab('funnel')"><span class="ic">${e3d('🧪',1,34)}</span>Test</div>
+    <div class="tab-item ${appMode==='games'?'active':''}" onclick="switchTab('games')"><span class="ic">${e3d('🎮',5,34)}</span>Oyunlar</div>
+    <div class="tab-item ${appMode==='coloring'?'active':''}" onclick="switchTab('coloring')"><span class="ic">${e3d('🖍️',3,34)}</span>Rəngləmə</div>
   `;
   container.appendChild(t);
 }
@@ -662,13 +666,13 @@ function goBack(){ if(state.screen>0){ state.screen--; render(); } }
 function screenAge(){
   const d=document.createElement('div');
   d.innerHTML = `<div class="info-banner">
-    <div class="ic">${iconRow(['page'],40)}</div>
+    <div class="ic">${e3d('📄',2,48)}</div>
     <p>Başlayın indi — çap oluna bilən iş vərəqləri əldə edin!</p>
   </div>
   <h1 class="q-title">Uşağınıza neçə yaş var?</h1>
   <div class="age-grid">
     ${ageOptions.map((o,i)=>`<div class="age-card" onclick="pickAge(${i})">
-      <div class="thumb">${o.emoji}</div>
+      <div class="thumb">${e3d(o.emoji,i,76)}</div>
       <div class="lbl">Yaş: ${o.label} →</div>
     </div>`).join('')}
   </div>`;
@@ -680,8 +684,8 @@ function screenGender(){
   const d=document.createElement('div');
   d.innerHTML = `<h1 class="q-title">Uşağınızın cinsini seçin</h1>
   <div class="gender-list">
-    <div class="gender-opt" onclick="pickGender('boy')"><span class="ic">👦</span> Oğlan</div>
-    <div class="gender-opt" onclick="pickGender('girl')"><span class="ic">👧</span> Qız</div>
+    <div class="gender-opt" onclick="pickGender('boy')"><span class="ic">${e3d('👦',0,46)}</span> Oğlan</div>
+    <div class="gender-opt" onclick="pickGender('girl')"><span class="ic">${e3d('👧',3,46)}</span> Qız</div>
   </div>`;
   return d;
 }
@@ -892,7 +896,7 @@ function renderThemeDetail(){
     d.innerHTML = `<h1 class="headline">🔤 Əlifba</h1>
     <p class="sub">Hər hərf, o hərflə başlayan söz və şəkil.</p>
     <div class="detail-grid detail-grid-3">
-      ${ALPHABET_DATA.map(x=>`<div class="detail-card"><div class="dletter">${x.l}</div><div class="dic">${x.ic}</div><div class="dsub">${x.word}</div></div>`).join('')}
+      ${ALPHABET_DATA.map(x=>`<div class="detail-card"><div class="dletter">${x.l}</div><div class="dic">${e3d(x.ic,x.l.charCodeAt(0),44)}</div><div class="dsub">${x.word}</div></div>`).join('')}
     </div>`;
   } else if(themeDetail==='music'){
     d.innerHTML = `<h1 class="headline">🎵 Azərbaycan Uşaq Mahnıları</h1>
@@ -904,13 +908,13 @@ function renderThemeDetail(){
     d.innerHTML = `<h1 class="headline">🔬 Elm Faktları</h1>
     <p class="sub">Uşaqlar üçün 10 maraqlı elm faktı.</p>
     <div class="detail-grid">
-      ${SCIENCE_DATA.map(x=>`<div class="detail-card wide"><div class="dic">${x.ic}</div><div class="dfact">${x.fact}</div></div>`).join('')}
+      ${SCIENCE_DATA.map(x=>`<div class="detail-card wide"><div class="dic">${e3d(x.ic,x.fact.length,44)}</div><div class="dfact">${x.fact}</div></div>`).join('')}
     </div>`;
   } else if(themeDetail==='nature'){
     d.innerHTML = `<h1 class="headline">🦕 Təbiət Faktları</h1>
     <p class="sub">Heyvanlar və təbiət haqqında 10 fakt.</p>
     <div class="detail-grid">
-      ${NATURE_DATA.map(x=>`<div class="detail-card wide"><div class="dic">${x.ic}</div><div class="dfact">${x.fact}</div></div>`).join('')}
+      ${NATURE_DATA.map(x=>`<div class="detail-card wide"><div class="dic">${e3d(x.ic,x.fact.length,44)}</div><div class="dfact">${x.fact}</div></div>`).join('')}
     </div>`;
   }
   scr.appendChild(d);
@@ -918,19 +922,6 @@ function renderThemeDetail(){
   appendFooter(app);
   appendTabBar(app);
 }
-const ICON_SVGS = {
-  gamepad: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#31373D" d="M2.13 14.856l-.004-.002S.075 27.271.075 29.061c0 1.824 1.343 3.302 3 3.302.68 0 1.3-.258 1.803-.678l10.166-8.938L2.13 14.856zm31.69 0l.004-.002s2.051 12.417 2.051 14.207c0 1.824-1.343 3.302-3 3.302-.68 0-1.3-.258-1.803-.678l-10.166-8.938 12.914-7.891z"/><g fill="#14171A"><circle cx="25.975" cy="15.551" r="8.5"/><circle cx="9.975" cy="15.551" r="8.5"/><path d="M9.975 7.051h16v16.87h-16z"/></g><circle fill="#14171A" cx="13.075" cy="23.301" r="5"/><circle fill="#14171A" cx="22.875" cy="23.301" r="5"/><circle fill="#67757F" cx="22.875" cy="23.301" r="3"/><circle fill="#67757F" cx="13.075" cy="23.301" r="3"/><circle fill="#FFCC4D" cx="25.735" cy="11.133" r="1.603"/><circle fill="#77B255" cx="25.735" cy="17.607" r="1.603"/><circle fill="#50A5E6" cx="22.498" cy="14.37" r="1.603"/><circle fill="#DD2E44" cx="28.972" cy="14.37" r="1.603"/><path d="M11.148 12.514v-2.168c0-.279-.226-.505-.505-.505H9.085c-.279 0-.505.226-.505.505v2.168l1.284 1.285 1.284-1.285zm-2.569 3.63v2.168c0 .279.226.505.505.505h1.558c.279 0 .505-.226.505-.505v-2.168l-1.284-1.285-1.284 1.285zm5.269-3.1H11.68l-1.285 1.285 1.285 1.285h2.168c.279 0 .505-.227.505-.505V13.55c0-.279-.226-.506-.505-.506zm-5.799 0H5.88c-.279 0-.505.227-.505.505v1.558c0 .279.226.505.505.505h2.168l1.285-1.285-1.284-1.283z" fill="#8899A6"/></svg>`,
-  tv: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#31373D" d="M35 31s0 4-4 4H5c-4 0-4-4-4-4V12c0-4 4-4 4-4h26s4 0 4 4v19z"/><path fill="#31373D" d="M21.303 10.389c.391.391.391 1.023 0 1.414s-1.023.391-1.414 0l-9.192-9.192c-.391-.391-.391-1.023 0-1.414s1.023-.391 1.414 0l9.192 9.192z"/><path fill="#31373D" d="M14.697 10.389c-.391.391-.391 1.023 0 1.414s1.023.391 1.414 0l9.192-9.192c.391-.391.391-1.023 0-1.414s-1.023-.391-1.414 0l-9.192 9.192z"/><path fill="#55ACEE" d="M18 11c8 0 10 1 11 2s2 3 2 8-1 7-2 8-3 2-11 2-10-1-11-2-2-3-2-8 1-7 2-8 3-2 11-2z"/><circle fill="#66757F" cx="31.5" cy="31.5" r="1.5"/><circle fill="#66757F" cx="4.5" cy="31.5" r="1.5"/></svg>`,
-  puzzle: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#78B159" d="M26.093 4.612c-.498.498-.629.839-.728 1.029-.66 1.266-1.455 1.676-2.78.351-.13-.13-4.087-4.267-4.741-5.017-.427-.49-1.081-.64-1.584-.262-.38.286-4.035 3.273-5.035 4.507-.774.955-.8 2.134-.079 2.856.326.326.727.449 1.151.578.552.169 1.763.068 2.47.775 1.133 1.133.54 2.924-.917 4.421-1.497 1.457-3.288 2.05-4.421.917-.708-.708-.606-1.918-.775-2.47-.129-.424-.252-.824-.578-1.151-.721-.721-1.9-.694-2.856.079-1.235 1-4.221 4.655-4.507 5.035-.379.503-.228 1.156.262 1.584.75.654 4.887 4.611 5.017 4.741 1.324 1.324.915 2.12-.351 2.78-.19.099-.53.229-1.029.728-1.462 1.462-1.462 3.833 0 5.295 1.462 1.462 3.833 1.462 5.295 0 .498-.498.629-.839.728-1.029.66-1.266 1.455-1.676 2.78-.351.13.13 4.087 4.267 4.741 5.017.427.49 1.081.64 1.584.262.38-.286 4.035-3.273 5.035-4.507.774-.955.8-2.134.079-2.856-.326-.326-.727-.449-1.151-.578-.552-.169-1.763-.068-2.47-.775-1.133-1.133-.54-2.924.917-4.421 1.497-1.457 3.288-2.05 4.421-.917.708.708.606 1.918.775 2.47.129.424.252.824.578 1.151.721.721 1.9.694 2.856-.079 1.235-1 4.221-4.655 4.507-5.035.379-.503.228-1.156-.262-1.584-.75-.654-4.887-4.611-5.017-4.741-1.324-1.324-.915-2.12.351-2.78.19-.099.53-.229 1.029-.728 1.462-1.462 1.462-3.833 0-5.295-1.462-1.463-3.833-1.463-5.295 0z"/></svg>`,
-  printer: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#67757F" d="M30 12H6V5c0-1.105.826-2 1.846-2h20.309C29.173 3 30 3.895 30 5v7zm0 19c0 1.104-.896 2-2 2H8c-1.104 0-2-.896-2-2v-3h24v3z"/><path fill="#E1E8ED" d="M27 12H9V2c0-1.105.896-2 2-2h14c1.104 0 2 .896 2 2v10z"/><path fill="#5DADEC" d="M34 25c0 1-1 3-3 3H5c-2 0-3-2-3-3v-9c0-2.209 1.791-4 4-4h24c2.209 0 4 1.791 4 4v9z"/><path fill="#292F33" d="M30 25c0-1.104-.978-2-2.182-2H8.182C6.977 23 6 23.896 6 25v4h24v-4z"/><path fill="#4289C1" d="M30 15c0 1.104-.896 2-2 2H8c-1.104 0-2-.896-2-2v-4h24v4z"/><path fill="#E1E8ED" d="M27 34c0 1.104-.896 2-2 2H11c-1.104 0-2-.896-2-2v-8h18v8z"/><path fill="#9AAAB4" d="M25 29c0 .553-.447 1-1 1H12c-.552 0-1-.447-1-1 0-.553.448-1 1-1h12c.553 0 1 .447 1 1z"/><circle fill="#F5F8FA" cx="30.5" cy="19.5" r="1.5"/><path fill="#9AAAB4" d="M25 32c0 .553-.447 1-1 1H12c-.552 0-1-.447-1-1 0-.553.448-1 1-1h12c.553 0 1 .447 1 1zM9 25h18v2H9z"/></svg>`,
-  page: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#E1E8ED" d="M32.415 9.586l-9-9C23.054.225 22.553 0 22 0c-1.104 0-1.999.896-2 2 0 .552.224 1.053.586 1.415l-3.859 3.859 9 9 3.859-3.859c.362.361.862.585 1.414.585 1.104 0 2.001-.896 2-2 0-.552-.224-1.052-.585-1.414z"/><path fill="#CCD6DD" d="M22 0H7C4.791 0 3 1.791 3 4v28c0 2.209 1.791 4 4 4h22c2.209 0 4-1.791 4-4V11h-9c-1 0-2-1-2-2V0z"/><path fill="#99AAB5" d="M22 0h-2v9c0 2.209 1.791 4 4 4h9v-2h-9c-1 0-2-1-2-2V0zm-5 8c0 .552-.448 1-1 1H8c-.552 0-1-.448-1-1s.448-1 1-1h8c.552 0 1 .448 1 1zm0 4c0 .552-.448 1-1 1H8c-.552 0-1-.448-1-1s.448-1 1-1h8c.552 0 1 .448 1 1zm12 4c0 .552-.447 1-1 1H8c-.552 0-1-.448-1-1s.448-1 1-1h20c.553 0 1 .448 1 1zm0 4c0 .553-.447 1-1 1H8c-.552 0-1-.447-1-1 0-.553.448-1 1-1h20c.553 0 1 .447 1 1zm0 4c0 .553-.447 1-1 1H8c-.552 0-1-.447-1-1 0-.553.448-1 1-1h20c.553 0 1 .447 1 1zm0 4c0 .553-.447 1-1 1H8c-.552 0-1-.447-1-1 0-.553.448-1 1-1h20c.553 0 1 .447 1 1z"/></svg>`,
-  pencil: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#D99E82" d="M35.222 33.598c-.647-2.101-1.705-6.059-2.325-7.566-.501-1.216-.969-2.438-1.544-3.014-.575-.575-1.553-.53-2.143.058 0 0-2.469 1.675-3.354 2.783-1.108.882-2.785 3.357-2.785 3.357-.59.59-.635 1.567-.06 2.143.576.575 1.798 1.043 3.015 1.544 1.506.62 5.465 1.676 7.566 2.325.359.11 1.74-1.271 1.63-1.63z"/><path fill="#EA596E" d="M13.643 5.308c1.151 1.151 1.151 3.016 0 4.167l-4.167 4.168c-1.151 1.15-3.018 1.15-4.167 0L1.141 9.475c-1.15-1.151-1.15-3.016 0-4.167l4.167-4.167c1.15-1.151 3.016-1.151 4.167 0l4.168 4.167z"/><path fill="#FFCC4D" d="M31.353 23.018l-4.17 4.17-4.163 4.165L7.392 15.726l8.335-8.334 15.626 15.626z"/><path fill="#292F33" d="M32.078 34.763s2.709 1.489 3.441.757c.732-.732-.765-3.435-.765-3.435s-2.566.048-2.676 2.678z"/><path fill="#CCD6DD" d="M2.183 10.517l8.335-8.335 5.208 5.209-8.334 8.335z"/><path fill="#99AAB5" d="M3.225 11.558l8.334-8.334 1.042 1.042L4.267 12.6zm2.083 2.086l8.335-8.335 1.042 1.042-8.335 8.334z"/></svg>`,
-  book: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#553788" d="M15 31c0 2.209-.791 4-3 4H5c-4 0-4-14 0-14h7c2.209 0 3 1.791 3 4v6z"/><path fill="#9266CC" d="M34 33h-1V23h1c.553 0 1-.447 1-1s-.447-1-1-1H10c-4 0-4 14 0 14h24c.553 0 1-.447 1-1s-.447-1-1-1z"/><path fill="#CCD6DD" d="M34.172 33H11c-2 0-2-10 0-10h23.172c1.104 0 1.104 10 0 10z"/><path fill="#99AAB5" d="M11.5 25h23.35c-.135-1.175-.36-2-.678-2H11c-1.651 0-1.938 6.808-.863 9.188C9.745 29.229 10.199 25 11.5 25z"/><path fill="#269" d="M12 8c0 2.209-1.791 4-4 4H4C0 12 0 1 4 1h4c2.209 0 4 1.791 4 4v3z"/><path fill="#55ACEE" d="M31 10h-1V3h1c.553 0 1-.447 1-1s-.447-1-1-1H7C3 1 3 12 7 12h24c.553 0 1-.447 1-1s-.447-1-1-1z"/><path fill="#CCD6DD" d="M31.172 10H8c-2 0-2-7 0-7h23.172c1.104 0 1.104 7 0 7z"/><path fill="#99AAB5" d="M8 5h23.925c-.114-1.125-.364-2-.753-2H8C6.807 3 6.331 5.489 6.562 7.5 6.718 6.142 7.193 5 8 5z"/><path fill="#F4900C" d="M20 17c0 2.209-1.791 4-4 4H6c-4 0-4-9 0-9h10c2.209 0 4 1.791 4 4v1z"/><path fill="#FFAC33" d="M35 19h-1v-5h1c.553 0 1-.447 1-1s-.447-1-1-1H15c-4 0-4 9 0 9h20c.553 0 1-.447 1-1s-.447-1-1-1z"/><path fill="#CCD6DD" d="M35.172 19H16c-2 0-2-5 0-5h19.172c1.104 0 1.104 5 0 5z"/><path fill="#99AAB5" d="M16 16h19.984c-.065-1.062-.334-2-.812-2H16c-1.274 0-1.733 2.027-1.383 3.5.198-.839.657-1.5 1.383-1.5z"/></svg>`,
-  star: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#FFAC33" d="M27.287 34.627c-.404 0-.806-.124-1.152-.371L18 28.422l-8.135 5.834c-.693.496-1.623.496-2.312-.008-.689-.499-.979-1.385-.721-2.194l3.034-9.792-8.062-5.681c-.685-.505-.97-1.393-.708-2.203.264-.808 1.016-1.357 1.866-1.363L12.947 13l3.179-9.549c.268-.809 1.023-1.353 1.874-1.353.851 0 1.606.545 1.875 1.353L23 13l10.036.015c.853.006 1.606.556 1.867 1.363.263.81-.022 1.698-.708 2.203l-8.062 5.681 3.034 9.792c.26.809-.033 1.695-.72 2.194-.347.254-.753.379-1.16.379z"/></svg>`,
-  smile: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path fill="#FFCC4D" d="M36 18c0 9.941-8.059 18-18 18S0 27.941 0 18 8.059 0 18 0s18 8.059 18 18"/><circle fill="#FF7892" cx="7" cy="18" r="5"/><circle fill="#FF7892" cx="29" cy="18" r="5"/><path fill="#664500" d="M27.335 21.629c-.178-.161-.444-.171-.635-.029-.039.029-3.922 2.9-8.7 2.9-4.766 0-8.662-2.871-8.7-2.9-.191-.142-.457-.13-.635.029-.177.16-.217.424-.094.628C8.7 22.472 11.788 27.5 18 27.5s9.301-5.028 9.429-5.243c.123-.205.084-.468-.094-.628zM7.999 15c-.15 0-.303-.034-.446-.106-.494-.247-.694-.848-.447-1.342C7.158 13.448 8.424 11 12 11c3.577 0 4.842 2.449 4.894 2.553.247.494.047 1.095-.447 1.342-.492.245-1.085.049-1.336-.436C15.068 14.379 14.281 13 12 13c-2.317 0-3.099 1.433-3.106 1.447-.175.351-.528.553-.895.553zm20.002 0c-.367 0-.72-.202-.896-.553C27.08 14.401 26.299 13 24 13s-3.08 1.401-3.112 1.46c-.26.481-.859.67-1.345.42-.485-.252-.682-.839-.438-1.328C19.157 13.449 20.423 11 24 11s4.843 2.449 4.895 2.553c.247.494.047 1.095-.447 1.342-.144.071-.297.105-.447.105z"/></svg>`
-};
-function iconRow(keys, size){ size = size || 44; return keys.map(k => `<span style="display:inline-block; width:${size}px; height:${size}px; margin:0 6px; vertical-align:middle;">${ICON_SVGS[k]}</span>`).join(''); }
-
 function screenThemes(){
   const topics = [
     {key:'art', label:'Rəssamlıq', bg:'#fef3c7'},
@@ -945,7 +936,7 @@ function screenThemes(){
   <p class="sub">Oyun vasitəsilə öyrənmə uşaqlar üçün ən effektivdir — yeni məlumat dərhal tətbiq olunanda daha yaxşı yadda qalır.</p>
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
     ${topics.map(t=>`<div onclick="openThemeDetail('${t.key}')" style="background:${t.bg}; border-radius:18px; padding:20px 10px; text-align:center; cursor:pointer;">
-      <div style="width:52px; height:52px; margin:0 auto 8px;">${TOPIC_SVGS[t.key]}</div>
+      <div style="margin:0 auto 10px;">${e3d(TOPIC_SVGS[t.key],topics.indexOf(t),64)}</div>
       <div style="font-weight:800; font-size:.9rem; color:var(--ink);">${t.label}</div>
       <div style="font-size:.68rem; color:var(--ink-soft); font-weight:700; margin-top:2px;">Bax →</div>
     </div>`).join('')}
@@ -995,7 +986,7 @@ function screenKidsLove(){
   const d=document.createElement('div');
   d.innerHTML = `<h1 class="headline">Uşaqlar bizi sevir!</h1>
   <p class="sub">Valideynlərin 95%-i deyir ki, uşaqlar ilk sınaq həftəsindən sonra tətbiqi istifadə etməyə davam edir!</p>
-  <div class="feature-emoji" style="width:100%; height:150px;">${iconRow(['book','star','smile'], 56)}</div>
+  ${icons3D([['📚','#b6a2ff','#6d4ee0'],['⭐','#ffd37a','#e9a416'],['😊','#ff9fb4','#e0486b']])}
   <ul class="bullet-list">
     <li>✏️ Oynayaraq öyrənin</li>
     <li>⭐ Nailiyyətləri izləyin</li>
@@ -1005,6 +996,11 @@ function screenKidsLove(){
   return d;
 }
 
+const E3D_PAL = [['#7db2ff','#2563eb'],['#6fe0cf','#1b9d8c'],['#ffc27a','#e8832c'],['#ff9fb4','#e0486b'],['#b6a2ff','#6d4ee0'],['#7ee0a8','#1f9d55'],['#ffd37a','#e9a416'],['#8fd0ff','#2a86d6']];
+function e3d(content, i, z){
+  const p = E3D_PAL[(i||0) % E3D_PAL.length];
+  return `<span class="e3d" style="--a:${p[0]}; --b:${p[1]}; --s:${p[1]}55; --z:${z||44}px;"><span>${content}</span></span>`;
+}
 function icons3D(items){
   return `<div class="i3d-row">${items.map((it,i)=>`<div class="i3d-col"><div class="i3d" style="--a:${it[1]}; --b:${it[2]}; --s:${it[2]}66; animation-delay:${.1+i*.12}s;"><span>${it[0]}</span></div>${it[3]?`<div class="i3d-cap">${it[3]}</div>`:''}</div>`).join('')}</div>`;
 }
@@ -1287,7 +1283,7 @@ function currentReportAge(){ return AGE_ACTIVITY_POOL[state.age] ? state.age : '
 
 function dayCardHTML(d){
   return `<div class="plan-day-card ${d.focus?'focus':''}">
-    <div class="plan-day-head"><span>${d.ic} ${d.day}</span>${d.special?`<span class="plan-badge">${d.special}</span>`:(d.focus?`<span class="plan-badge">Fokus sahə</span>`:'')}</div>
+    <div class="plan-day-head"><span>${e3d(d.ic,(d.day||'').length,26)} ${d.day}</span>${d.special?`<span class="plan-badge">${d.special}</span>`:(d.focus?`<span class="plan-badge">Fokus sahə</span>`:'')}</div>
     <div class="plan-day-title">${d.activity}</div>
     <div class="plan-day-why">💡 ${d.why}</div>
     <div class="plan-day-how"><b>Necə:</b> ${d.how}</div>
@@ -1490,7 +1486,7 @@ function screenReport(){
     <div class="skill-card">
       <div style="font-weight:800; margin-bottom:14px;">Sahələr üzrə nəticə</div>
       ${DOMAIN_ORDER.map((d,i)=>`<div class="skill-row">
-        <div class="skill-lbl"><span>${DOMAIN_ACTIVITIES[d].ic} ${d}</span><span>${scores[d]}%</span></div>
+        <div class="skill-lbl"><span>${e3d(DOMAIN_ACTIVITIES[d].ic,DOMAIN_ORDER.indexOf(d),26)} ${d}</span><span>${scores[d]}%</span></div>
         <div class="skill-track"><div class="skill-fill c${(i%7)+1}" data-w="${scores[d]}"></div></div>
       </div>`).join('')}
     </div>
@@ -2024,7 +2020,7 @@ function renderHome(){
     const b = document.createElement('div');
     b.className = 'tier-square'+(gameTier===tk?' active':'');
     b.onclick = ()=>{ gameTier=tk; gameTierManual=true; renderGamesApp(); };
-    b.innerHTML = `<div class="thumb">${TIER_EMOJI[tk]}</div><div class="lbl">${td.label}</div>`;
+    b.innerHTML = `<div class="thumb">${e3d(TIER_EMOJI[tk],tk.length,44)}</div><div class="lbl">${td.label}</div>`;
     tierRow.appendChild(b);
   });
 
@@ -2034,7 +2030,7 @@ function renderHome(){
     const card = document.createElement('div');
     card.className='game-square';
     card.onclick = ()=>startGame(key);
-    card.innerHTML = `<div class="thumb" style="background:${g.color};">${g.ic}</div>
+    card.innerHTML = `<div class="thumb" style="background:${g.color};">${e3d(g.ic,DOMAIN_ORDER.indexOf(g.domain),52)}</div>
       <div class="lbl">${g.title}<span class="domain-tag">${g.domain}</span></div>
       <div class="best">🏆 ${tierGetBest(key)}${max?'/'+max:''}</div>`;
     grid.appendChild(card);
