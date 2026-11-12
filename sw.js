@@ -1,4 +1,4 @@
-const CACHE = 'usaqiq-v3';
+const CACHE = 'usaqiq-v4';
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', 'index.html', 'plans.js', 'plans-1-2.js', 'plans-3-4.js', 'plans-5-6.js', 'plans-7.js', 'plans-ext-1-2.js', 'plans-ext-3-4.js', 'plans-ext-5-6.js', 'plans-ext-7.js', 'img/icon-192.png', 'img/icon-512.png'])));

@@ -69,6 +69,47 @@ function frame(age, scores){
            sessions: sessionText(age, b), lowDomains: low };
 }
 
+
+var SLOT = {
+ 'Nitq':'səhər yeməyindən sonra, telefon və televizor söndürülmüş halda',
+ 'Motorika':'gündüz, yeməkdən əvvəl (aclıq və yorğunluq olmasın)',
+ 'İdrak':'günorta yuxudan sonra, sakit masa və ya xalça üstündə',
+ 'Sosial-Emosional':'axşam yeməyindən əvvəl, sizin tam diqqətinizlə',
+ 'Özünəxidmət':'ayrıca vaxt ayırmayın: səhər geyinmə və ya yemək öncəsi əl yuma anında'
+};
+var REFUSE = {
+ 'Nitq':'Təkid etməyin. 5 dəqiqə sonra eyni addımı oyuncaq vasitəsilə edin: kukla "danışsın", uşaq dinləsin.',
+ 'Motorika':'Hərəkəti bir addıma endirin, əlindən tutun və uğurlu bitirin; qalanını sabaha saxlayın.',
+ 'İdrak':'Tapşırığı 2 əşyaya endirin, doğru cavabı uşaqla birgə tamamlayın və dayandırın.',
+ 'Sosial-Emosional':'Zorla qoşdurmayın: yanında oturub özünüz oynayın, uşaq baxsın. 5 dəqiqə sonra yenə təklif edin.',
+ 'Özünəxidmət':'Yalnız son addımı uşaq etsin (məsələn, sonuncu qolu çəksin), qalanını siz edin.'
+};
+var WEEK_SUPPORT = [
+ 'Birinci həftə: hər addımı uşaqla birlikdə, əl-əl edin.',
+ 'İkinci həftə: yarı dəstək. Başlanğıcı siz edin, davamını uşaq.',
+ 'Üçüncü həftə: yalnız sözlə dəstək. Əl vurmayın, "Sonra nə?" deyə yönləndirin.',
+ 'Dördüncü həftə: köməksiz yoxlama. 10 saniyə gözləyin, yalnız lazım olsa kömək edin.'
+];
+
+function sessionPlan(age, b){
+  var m = BASE_MIN[age] || 6;
+  if(b <= 2) return { n: 3, min: m };
+  if(b <= 4) return { n: 2, min: Math.round(m * 1.5) };
+  return { n: 1, min: Math.round(m * 2) };
+}
+
+function schedule(age, dom, b, week){
+  var s = sessionPlan(age, b);
+  var target = b <= 2 ? '10 cəhddən ən azı 3-ü' : (b <= 4 ? '10 cəhddən ən azı 5-i' : '10 cəhddən ən azı 8-i');
+  var support = week === null || week === undefined ? 'Köməyi addım-addım azaldın: əvvəl əl-əl, sonra sözlə, sonra heç.' : WEEK_SUPPORT[week];
+  return {
+    when: (dom === 'Özünəxidmət' ? 'Gündə ' + s.n + ' real rutin anında (hər biri təxminən ' + s.min + ' dəqiqə); ' : 'Gündə ' + s.n + ' seans, hər biri təxminən ' + s.min + ' dəqiqə; ') + SLOT[dom] + '.',
+    goal: 'Bu gün ' + target + ' uğurlu olsun. ' + support,
+    refuse: REFUSE[dom],
+    track: 'Axşam 1 dəqiqə qeyd edin: oldu, qismən oldu və ya olmadı. Ardıcıl 3 gün "olmadı" olarsa, planı bir pillə sadələşdirin.'
+  };
+}
+
 function module(age, dom, score){
   var set = window.PLANS_MOD && window.PLANS_MOD[age] && window.PLANS_MOD[age][dom];
   if(!set) return null;
@@ -95,6 +136,7 @@ function dayCard(day, dom, mod, opts){
     card.materials = mod.m.m || '';
   }
   if(opts.rich || opts.refer) card.refer = mod.m.r || '';
+  card.sched = schedule(opts.age, dom, mod.band, opts.week === undefined ? null : opts.week);
   return card;
 }
 
@@ -111,11 +153,11 @@ function week(age, scores){
   var days = [];
   DOMS.forEach(function(d, i){
     var m = module(age, d, scores[d]);
-    days.push(dayCard(DAYS[i], d, m, { rich: true }));
+    days.push(dayCard(DAYS[i], d, m, { rich: true, age: age }));
   });
   var worst = weakestOrder(scores)[0];
   var wm = module(age, worst, scores[worst]);
-  days.push(dayCard(DAYS[5], worst, wm, { up: true, refer: true, badge: 'Zəif sahə təkrarı' }));
+  days.push(dayCard(DAYS[5], worst, wm, { up: true, refer: true, age: age, badge: 'Zəif sahə təkrarı' }));
   days[5].activity = 'Təkrar: ' + wm.m.t;
   days.push(familyDay(DAYS[6], 'Ailə vaxtı və həftənin yekunu', [
     'Uşaqla 30–40 dəqiqə sərbəst oyun: seçimi o etsin, siz təlim etməyin.',
@@ -140,11 +182,11 @@ function month(age, scores){
     var days = [];
     DOMS.forEach(function(d, i){
       var m = module(age, d, scores[d]);
-      days.push(dayCard(DAYS[i], d, m, { cut: st.cut, up: st.up, rich: w === 0, refer: w === 3 }));
+      days.push(dayCard(DAYS[i], d, m, { cut: st.cut, up: st.up, rich: w === 0, refer: w === 3, age: age, week: w }));
     });
     var focus = (w % 2 === 1 && band(scores[order[1]]) <= 4) ? order[1] : order[0];
     var fm = module(age, focus, scores[focus]);
-    var sat = dayCard(DAYS[5], focus, fm, { up: true, rich: w === 0, refer: w === 3, badge: 'Zəif sahə təkrarı' });
+    var sat = dayCard(DAYS[5], focus, fm, { up: true, rich: w === 0, refer: w === 3, age: age, week: w, badge: 'Zəif sahə təkrarı' });
     sat.activity = 'Təkrar: ' + fm.m.t;
     days.push(sat);
     days.push(familyDay(DAYS[6], 'Ailə vaxtı və həftənin yekunu', [

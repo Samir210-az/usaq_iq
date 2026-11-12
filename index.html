@@ -1102,6 +1102,7 @@ function dayCardHTML(d){
   return `<div class="plan-day-card ${d.focus?'focus':''}">
     <div class="plan-day-head"><span>${e3d(d.ic,(d.day||'').length,26)} ${d.day}</span>${d.special?`<span class="plan-badge">${d.special}</span>`:''}</div>
     <div class="plan-day-title">${d.activity}</div>
+    ${d.sched?`<div class="plan-day-example"><b>⏰ Nə vaxt və nə qədər:</b> ${d.sched.when}<br><b>🎯 Günün hədəfi:</b> ${d.sched.goal}<br><b>🔁 Uşaq imtina edərsə:</b> ${d.sched.refuse}</div>`:''}
     ${d.plain?`<div class="plan-day-example"><b>Sadə dillə:</b> ${d.plain}</div>`:''}
     ${d.materials?`<div class="plan-day-example"><b>Nə lazımdır:</b> ${d.materials}</div>`:''}
     <div class="plan-day-how"><b>Necə edilir:</b><ol style="margin:6px 0 0 18px; padding:0;">${steps}</ol></div>
@@ -1111,6 +1112,7 @@ function dayCardHTML(d){
     ${d.sign?`<div class="plan-day-example"><b>İrəliləyiş göstəricisi:</b> ${d.sign}</div>`:''}
     ${d.up?`<div class="plan-day-example"><b>Növbəti addım:</b> ${d.up}</div>`:''}
     ${d.refer?`<div class="plan-day-example"><b>Mütəxəssisə nə vaxt müraciət etməli:</b> ${d.refer}</div>`:''}
+    ${d.sched?`<div class="plan-day-example"><b>✅ Gün sonu:</b> ${d.sched.track}</div>`:''}
   </div>`;
 }
 
@@ -1244,6 +1246,7 @@ function buildPlanDoc(o){
   const dayRow = d => `<div style="background:#fbf3e7; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid ${d.focus?'#F4A261':'#2A9D8F'};">
     <div style="font-weight:800; font-size:.85rem; color:#6A0000;">${d.ic} ${d.day}${d.special?' — '+d.special:''}</div>
     <div style="font-weight:800; font-size:1.05rem; margin-top:4px;">${d.activity}</div>
+    ${d.sched?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>⏰ Nə vaxt və nə qədər:</b> ${d.sched.when}<br><b>🎯 Günün hədəfi:</b> ${d.sched.goal}<br><b>🔁 Uşaq imtina edərsə:</b> ${d.sched.refuse}</div>`:''}
     ${d.plain?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Sadə dillə:</b> ${d.plain}</div>`:''}
     ${d.materials?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Nə lazımdır:</b> ${d.materials}</div>`:''}
     <div style="color:#333; font-size:.9rem; margin-top:6px;"><b>Necə edilir:</b><ol style="margin:6px 0 0 18px; padding:0;">${(d.steps||[]).map(x=>'<li style="margin-bottom:4px;">'+x+'</li>').join('')}</ol></div>
