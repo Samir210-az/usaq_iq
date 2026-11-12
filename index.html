@@ -672,7 +672,7 @@ function screenAge(){
   const d=document.createElement('div');
   d.innerHTML = `<div class="info-banner">
     <div class="ic">${e3d('📄',2,48)}</div>
-    <p>Başlayın indi — çap oluna bilən iş vərəqləri əldə edin!</p>
+    <p>Başlayın indi — uşağınız üçün fərdi inkişaf planı əldə edin!</p>
   </div>
   <h1 class="q-title">Uşağınıza neçə yaş var?</h1>
   <div class="age-grid">
@@ -742,7 +742,7 @@ function screenCreating(){
   const d=document.createElement('div');
   d.innerHTML = `<h1 class="headline">Sizin fərdi tədris proqramınız yaradılır</h1>
   <div class="progress-fake"><div class="spinner"></div><div style="font-weight:700; color:var(--ink-soft);">Cavablarınız təhlil olunur...</div></div>
-  <div class="counter-box"><span class="num">10,000+</span> valideyn tətbiqi qiymətləndirib</div>`;
+  <div class="counter-box"><span class="num">AN Mərkəzi</span> təcrübəsinə əsaslanan inkişaf testi</div>`;
   setTimeout(()=>{ if(!popupShown){ popupShown=true; showPopup(); } else { next(); } }, 900);
   return d;
 }
@@ -990,7 +990,7 @@ function screenStressFree(){
 function screenKidsLove(){
   const d=document.createElement('div');
   d.innerHTML = `<h1 class="headline">Uşaqlar bizi sevir!</h1>
-  <p class="sub">Valideynlərin 95%-i deyir ki, uşaqlar ilk sınaq həftəsindən sonra tətbiqi istifadə etməyə davam edir!</p>
+  <p class="sub">Tapşırıqlar oyun formasındadır ki, uşaq maraqla davam etsin.</p>
   ${icons3D([['📚','#b6a2ff','#6d4ee0'],['⭐','#ffd37a','#e9a416'],['😊','#ff9fb4','#e0486b']])}
   <ul class="bullet-list">
     <li>✏️ Oynayaraq öyrənin</li>
@@ -1052,20 +1052,13 @@ function screenGet3(){
 
 function screenReviews(){
   const d=document.createElement('div');
-  d.innerHTML = `<h1 class="headline">10,000+ valideyn</h1>
-  <p class="sub">Onlar artıq UşaqIQ tətbiqini uşaqları üçün istifadə edir.</p>
-  <div class="rating-cards">
-    <div class="rating-card"><div class="stars">★★★★★</div><div style="font-size:.78rem; color:var(--ink-soft); font-weight:700;">28.2K rəy</div><div class="num">4.9</div></div>
-    <div class="rating-card"><div class="stars">★★★★★</div><div style="font-size:.78rem; color:var(--ink-soft); font-weight:700;">19.4K rəy</div><div class="num">4.6</div></div>
-  </div>
-  <div class="review-card">
-    <div class="review-head"><div class="avatar">J</div><div><div class="review-name">Aygün M.</div><div class="stars" style="font-size:.8rem;">★★★★★</div></div></div>
-    <div class="review-txt">Oğlumun yaddaş və məntiq bacarıqlarında aydın irəliləyiş gördüm, tətbiqi istifadə etməyə başlayandan bəri.</div>
-  </div>
-  <div class="review-card">
-    <div class="review-head"><div class="avatar">T</div><div><div class="review-name">Tərlan S.</div><div class="stars" style="font-size:.8rem;">★★★★★</div></div></div>
-    <div class="review-txt">Qızım tətbiqi çox tez mənimsədi, fərdi yanaşma həqiqətən fərq yaradır.</div>
-  </div>
+  d.innerHTML = `<h1 class="headline">Valideynlər üçün sadə və aydın</h1>
+  <p class="sub">UşaqIQ AN Psixoloji Dəstək və Reabilitasiya Mərkəzinin təcrübəsinə əsaslanır.</p>
+  <ul class="bullet-list">
+    <li>Test 5 inkişaf sahəsini əhatə edir</li>
+    <li>Nəticəyə uyğun fərdi plan hazırlanır</li>
+    <li>Lazım olarsa, mərkəzin mütəxəssisi ilə əlaqə yaradılır</li>
+  </ul>
   <button class="big-btn" onclick="next()">Növbəti</button>`;
   return d;
 }
@@ -1076,7 +1069,7 @@ function screenExpert(){
   <ul class="bullet-list">
     <li>Erkən uşaq təhsili mütəxəssisləri tərəfindən yaradılıb</li>
     <li>Uşaq inkişafı üzrə təcrübəli psixoloqlar tərəfindən hazırlanıb</li>
-    <li>Beynəlxalq təhsil standartlarına uyğundur</li>
+    <li>Valideynlər üçün sadə dildə hazırlanıb</li>
   </ul>
   <div class="expert-card">
     <div class="quote">"</div>
