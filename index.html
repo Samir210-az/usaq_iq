@@ -1203,6 +1203,7 @@ async function submitLead(){
   try {
     if(!window.uiqLeads) throw new Error('offline');
     await window.uiqLeads.submit({ name:name, phone:phone, child:child, age:state.age||'', scores:sc, weak:weak.concat(['plan:'+planDuration]) });
+    try { fetch('https://usaqiq-api.vercel.app/api/notify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name:name, child:child, age:state.age||'', phone:phone, plan:planDuration, overall:PLANS.overall(sc) }), keepalive:true }).catch(function(){}); } catch(e){}
     try { localStorage.setItem('uiq_lead_sent','1'); } catch(e){}
     window.sgTrackRecord && window.sgTrackRecord('Tam plan sorğusu','Valideyn','Yaş: '+(state.age||'—'));
     closeLeadForm();
