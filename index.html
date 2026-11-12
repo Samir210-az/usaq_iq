@@ -379,6 +379,11 @@ button{font-family:inherit; cursor:pointer; border:none;}
 <p>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi, Bakı, Nizami rayonu, Rizvan Teymurov 59. Telefon: +994 55 415 72 15.</p>
 </main></noscript>
 
+<script src="plans-1-2.js"></script>
+<script src="plans-3-4.js"></script>
+<script src="plans-5-6.js"></script>
+<script src="plans-7.js"></script>
+<script src="plans.js"></script>
 <script>
 const state = { screen:0, age:null, gender:null, answers:[], tracked:false };
 let appMode = 'funnel';
@@ -1086,217 +1091,34 @@ function screenExpert(){
 /* ===== HƏFTƏLİK/AYLIQ/İLLİK PROQRAM GENERATORU ===== */
 const WEEK_DAYS = ['Bazar ertəsi','Çərşənbə axşamı','Çərşənbə','Cümə axşamı','Cümə','Şənbə','Bazar'];
 
-const AGE_ACTIVITY_POOL = {
-  '1–2': {
-    'Nitq': [
-      {a:'Şəkilli kitab oxumaq', why:'Bu yaşda uşaq şəkil ilə sözü əlaqələndirməyi öyrənir — bu, gələcək söz ehtiyatının təməlidir.', how:'Hər səhifədə şəkli göstərib "Bu nədir?" deyə soruşun, cavab gözləyin, sonra sözü aydın tələffüz edin.', example:'Pişik şəklinə baxarkən: "Bu pişikdir. Pişik miyov-miyov deyir" — uşaq təqlid etməyə çalışacaq.'},
-      {a:'Gündəlik sözlərin təkrarı', why:'Kiçik yaşda söz yalnız tez-tez və müxtəlif kontekstdə eşidiləndə yadda qalır.', how:'"su", "top", "süd" kimi 3-4 sadə sözü gün ərzində fərqli anlarda dəfələrlə işlədin.', example:'Əl yuyarkən "su" deyin, sonra içərkən yenə "su" deyərək əlaqəni möhkəmləndirin.'},
-      {a:'Sadə uşaq mahnıları', why:'Ritm və melodiya kiçik uşaqlarda dil öyrənməsini asanlaşdırır.', how:'Qısa, təkrarlanan sözlü mahnıları gündə bir neçə dəfə birlikdə oxuyun.', example:'Əl çalaraq sadə "bir-iki-üç" sayğıcını oxuyun, uşaq əllərini çalmağa çalışsın.'},
-      {a:'Heyvan səsi təqlidi', why:'Səs təqlidi dil əzələlərini işlədir və fonetik inkişafı dəstəkləyir.', how:'Heyvan şəklini göstərib onun səsini birlikdə çıxarın.', example:'"İnək necə deyir?" — "Möö" — uşaq təkrarlamağa cəhd etsin.'},
-      {a:'Bədən hissələrini göstərmə', why:'Bu, həm söz ehtiyatını, həm bədən sxemi anlayışını inkişaf etdirir.', how:'"Burnun haradadır?" deyə soruşub göstərməsini gözləyin, özünüz də göstərin.', example:'Geyinərkən "Qolun haradadır?" deyib qolçağa salarkən adı çəkin.'}
-    ],
-    'Motorika': [
-      {a:'Kubla qüllə qurma', why:'İncə motorika və əl-göz koordinasiyasının inkişafına kömək edir.', how:'2-3 kubu üst-üstə qoymağı göstərin, sonra təkrarlatdırın.', example:'Qüllə yıxılanda birlikdə gülün və yenidən qurun — bu, həvəs və səbri artırır.'},
-      {a:'Topu yuvarlama', why:'Kobud motorika və növbə anlayışının başlanğıcıdır.', how:'Yerdə oturaraq topu bir-birinizə yuvarladın.', example:'"Sənə", "mənə" deyərək topu ötürün, növbə sözünü öyrədin.'},
-      {a:'Qaşıqla yemək', why:'Əl-ağız koordinasiyası və müstəqillik hissi formalaşdırır.', how:'Öz-özünə qaşıqla yeməyə cəhd etdirin, kirlənməkdən çəkinməyin.', example:'İlk dəfələr yarısı düşə bilər — bu normaldır, təriflə həvəsləndirin.'},
-      {a:'Pilləkən məşqi', why:'Tarazlıq və ayaq əzələlərinin gücləndirilməsinə xidmət edir.', how:'Əlindən tutaraq pilləkənə addım-addım çıxmağı öyrədin.', example:'Hər pillədə "bir addım da" deyərək təşviq edin.'},
-      {a:'Sərbəst cızma-qara', why:'Karandaş tutma vərdişinin ilk addımıdır.', how:'Böyük vərəqdə yoğun karandaşla sərbəst xətlər çəkdirin.', example:'Öz əlinizlə də yanında cızın ki, uşaq təqlid etsin.'}
-    ],
-    'İdrak': [
-      {a:'Gizlətmə-tapma oyunu', why:'Obyekt sabitliyi anlayışını (əşya gözdən itsə də var olması) inkişaf etdirir.', how:'Oyuncağı örtük altında gizlədib "hanı?" deyə axtartdırın.', example:'Əvvəl yarısını görünən saxlayın, sonra tam gizlədin.'},
-      {a:'Rəngli əşya qruplaşdırma', why:'Erkən təsnifat və müşahidə bacarığını formalaşdırır.', how:'Eyni rəngli 2-3 oyuncağı bir yerə yığdırın.', example:'"Bütün qırmızıları bura qoy" deyərək istiqamətləndirin.'},
-      {a:'Forma tanıma', why:'Görmə-qavrama və erkən riyazi düşüncənin təməlidir.', how:'Dairə və kvadrat formalı oyuncaqları göstərib adlandırın.', example:'"Bu dairədir, təkərə bənzəyir" deyə əlaqə qurun.'},
-      {a:'Səbəb-nəticə oyuncaqları', why:'Hərəkətin nəticəyə yol açdığını anlamağa kömək edir.', how:'Düyməni basanda səs/işıq verən oyuncaqla oynayın.', example:'"Sən basdın, o oxudu!" deyə əlaqəni sözlə vurğulayın.'},
-      {a:'Böyük-kiçik müqayisəsi', why:'Ölçü anlayışının ilk təməlini qoyur.', how:'İki fərqli ölçülü oyuncağı yan-yana qoyub müqayisə etdirin.', example:'"Bu böyük top, bu kiçik top" deyərək göstərin.'}
-    ],
-    'Sosial-Emosional': [
-      {a:'Güzgü oyunu', why:'Öz-özünü tanıma və emosiya ifadəsini inkişaf etdirir.', how:'Güzgü qarşısında üz ifadələri göstərin, təqlid etməsini istəyin.', example:'Gülümsəyin, sonra təəccüblü üz göstərin, uşaq təqlid etsin.'},
-      {a:'İsti sarılma anları', why:'Təhlükəsizlik hissi və bağlanma (attachment) formalaşdırır.', how:'Gün ərzində bir neçə dəfə qısa, isti sarılma verin.', example:'Səhər oyananda, gəzintidən qayıdanda sarılın.'},
-      {a:'"Əlvida" jesti öyrətmə', why:'Sosial ünsiyyət jestlərinin ilk formasıdır.', how:'Kimsə gedəndə əl yelləməyi birlikdə edin.', example:'"Baba gedir, əlini yellə: sağ ol!" deyin.'},
-      {a:'Emosiyanı adlandırma', why:'Hissini sözlə ifadə etmək gələcək özünütənzimləmənin başlanğıcıdır.', how:'Uşağın hiss etdiyini gördüyünüz an sözlə deyin.', example:'"Sən indi şənsən, çünki oyuncaqla oynayırsan" deyin.'},
-      {a:'Sadə növbə oyunu', why:'Paylaşma və gözləmə bacarığının ilk toxumu.', how:'"Mənim növbəm - sənin növbən" deyərək sadə oyun oynayın.', example:'Topu növbə ilə bir-birinizə atın, hər dəfə "sənin növbən!" deyin.'}
-    ],
-    'Özünəxidmət': [
-      {a:'Əl yuma addımları', why:'Gigiyena vərdişinin təməli və müstəqilliyin ilk addımıdır.', how:'Addım-addım göstərib əllərini yumağı təkrarlatdırın.', example:'"Su, sabun, ovuşdur, yuy" ardıcıllığını hər dəfə eyni sözlərlə deyin.'},
-      {a:'Geyim çıxarma', why:'İncə motorika və müstəqillik hissini gücləndirir.', how:'Corab, papaq kimi asan əşyaları özü çıxarmağa cəhd etdirin.', example:'"Sən çıxar, mən köməyəm" deyərək yarı-müstəqil dəstək verin.'},
-      {a:'Fincandan içmə', why:'Əl-ağız koordinasiyası və müstəqil qidalanmaya keçid.', how:'Kiçik, yüngül fincanla su içməyi öyrədin.', example:'Əvvəl az su ilə başlayın ki, tökülmə narahatlıq yaratmasın.'},
-      {a:'Oyuncaq yığma vərdişi', why:'Məsuliyyət hissinin ilk toxumu və nizam anlayışı.', how:'Oyundan sonra 1-2 oyuncağı yerinə qoymağı birlikdə edin.', example:'"Gəl bu kubu qutuya qoyaq" deyərək əl-ələ verin.'},
-      {a:'Ehtiyacını bildirmə', why:'Öz bədən siqnallarını tanıma və ifadə etmə bacarığı.', how:'"Yatmaq/yemək istəyirsən?" deyə soruşub cavabını gözləyin.', example:'Yorğun olanda "Gözlərin yumulur, yatmaq istəyirsən?" deyin.'}
-    ]
-  },
-  '3–4': {
-    'Nitq': [
-      {a:'Hekayə tamamlama oyunu', why:'Təxəyyül və cümlə qurma bacarığını inkişaf etdirir.', how:'Sadə hekayənin bir hissəsini deyin, uşaq necə davam edəcəyini desin.', example:'"Bir gün balaca dovşan meşəyə getdi və..." — uşaq davam etsin.'},
-      {a:'Gündəlik yeni söz', why:'Söz ehtiyatının sistematik genişlənməsini təmin edir.', how:'Hər gün 1 yeni sözü izah edib bir cümlədə birlikdə işlədin.', example:'"Bu gün yeni sözümüz: kəpənək. Kəpənək çiçəkdən çiçəyə uçur."'},
-      {a:'"Bu gün nə etdin?" söhbəti', why:'Xatirə və ardıcıl nitq qurma bacarığını gücləndirir.', how:'Axşam yatmazdan əvvəl günü xatırlayıb ətraflı danışmasını istəyin.', example:'"Əvvəl nə etdin, sonra nə oldu?" deyə ardıcıllığı dəstəkləyin.'},
-      {a:'Qafiyə tapma oyunu', why:'Fonoloji fərqinə varma — gələcək oxuma bacarığının əsasıdır.', how:'"Top" sözünə qafiyəli sözlər tapmağa çalışın.', example:'"Top-stop, top-yop" — uğursuz olsa da cəhdi təqdir edin.'},
-      {a:'Şəkil təsviri', why:'Müşahidə və təsviri nitq bacarığını inkişaf etdirir.', how:'Şəkilə baxıb "orada nə görürsən?" sualı ilə ətraflı təsvir etdirin.', example:'"Kim var? Nə edir? Hava necədir?" kimi sualları əlavə edin.'}
-    ],
-    'Motorika': [
-      {a:'Qayçı ilə xətt boyu kəsmə', why:'İncə motorika və əl güc idarəsini inkişaf etdirir.', how:'Uşaq qayçısı ilə qalın xətt üzərindən kəsmə məşqi edin.', example:'Əvvəlcə düz xətt, sonra dalğalı xətt kəsdirin.'},
-      {a:'Balans/velosiped məşqi', why:'Kobud motorika və tarazlıq hissini inkişaf etdirir.', how:'Balans velosipedi və ya skuterlə açıq havada məşq edin.', example:'Əvvəl köməklə, sonra tədricən əl çəkin.'},
-      {a:'Düymə taxma', why:'İncə motorika və gündəlik həyat bacarıqlarını birləşdirir.', how:'Böyük düymələri olan köynəkdə düymə taxmağı öyrədin.', example:'Öz köynəyinizdə göstərib sonra onunkunda təkrarlatdırın.'},
-      {a:'Top atma-tutma', why:'Əl-göz koordinasiyası və reaksiya sürətini artırır.', how:'1-2 metr məsafədən yumşaq topu ötürün.', example:'Tutanda alqışlayın, tutmayanda "yenə cəhd edək" deyin.'},
-      {a:'Nöqtəli şəkil çəkmə', why:'Karandaş idarəsi və gələcək yazı bacarığına hazırlıq.', how:'Nöqtələri birləşdirərək sadə şəkil (ev, günəş) çəkdirin.', example:'Əvvəl siz nümunə göstərin, sonra öz vərəqində təkrarlatdırın.'}
-    ],
-    'İdrak': [
-      {a:'Ucadan sayma', why:'Say ardıcıllığının əzbərlənməsi — riyaziyyatın təməli.', how:'Pilləkən, oyuncaq sayarkən birlikdə ucadan sayın.', example:'"1, 2, 3..." pilləkən çıxarkən hər pillədə bir rəqəm.'},
-      {a:'6-12 hissəli tapmaca', why:'Məkan qavrayışı və problem həlli bacarığını inkişaf etdirir.', how:'Sadə tapmacanı birlikdə, kənardan başlayaraq yığın.', example:'"Əvvəl künclər" deyərək strategiya öyrədin.'},
-      {a:'"Nə çatışmır?" oyunu', why:'Diqqət və yaddaş bacarığını gücləndirir.', how:'3 əşya göstərin, gözlərini yumdurub birini gizlədin.', example:'"Hansı yoxdur?" — düzgün cavabda təriflə.'},
-      {a:'Sadə toplama (barmaqla)', why:'Konkret əşyalarla riyazi düşüncənin başlanğıcı.', how:'Barmaqlarla 1+1, 2+1 kimi toplama nümayiş etdirin.', example:'"1 alma və daha 1 alma neçə edər?" — birlikdə sayın.'},
-      {a:'Təsnifat oyunu', why:'Kateqoriyalaşdırma — analitik düşüncənin başlanğıcı.', how:'Heyvan/meyvə şəkillərini kateqoriyalara ayırdın.', example:'"Bu heyvandır, bu meyvədir" — iki qutuya ayırın.'}
-    ],
-    'Sosial-Emosional': [
-      {a:'Emosiya kartları oyunu', why:'Hissləri tanıma və adlandırma bacarığını inkişaf etdirir.', how:'Şəkildəki üz ifadəsinin hansı hiss olduğunu soruşun.', example:'"Bu uşaq necə hiss edir?" — "Kədərli" cavabını gözləyin.'},
-      {a:'Növbəli masa oyunu', why:'Səbir və qaydalara riayət bacarığını formalaşdırır.', how:'Loto və ya sadə zər oyunu ilə növbə gözləməyi öyrədin.', example:'"İndi mənim növbəmdir, sonra sənin" deyə vurğulayın.'},
-      {a:'Rollu canlandırma', why:'Empatiya və sosial ssenariləri anlamağa kömək edir.', how:'"Sən həkim ol, mən xəstə" tipli oyun oynayın.', example:'Canlandırmadan sonra "Həkim olmaq necə idi?" deyə soruşun.'},
-      {a:'Paylaşma məşqi', why:'Səxavət və empatiya bacarığını gücləndirir.', how:'Oyuncağı başqa uşaqla paylaşmağı təşviq edin, məcbur etməyin.', example:'"Onunla paylaşsan, ikiniz də oynaya bilərsiniz" deyin.'},
-      {a:'"Necə barışa bilərik?" söhbəti', why:'Konflikt həlli bacarığının ilk addımıdır.', how:'İki uşaq arasında münaqişədə həll yolunu birlikdə axtarın.', example:'"Sən nə istəyirsən, o nə istəyir? Ortaq yol tapaq" deyin.'}
-    ],
-    'Özünəxidmət': [
-      {a:'Müstəqil geyinmə', why:'Özünəinam və müstəqillik hissini formalaşdırır.', how:'Vaxt təzyiqi olmadan öz-özünə geyinməyə tam imkan verin.', example:'Səhər 10 dəqiqə əlavə vaxt ayırın ki, tələsdirməyəsiniz.'},
-      {a:'Süfrə köməyi', why:'Ailə məsuliyyətinə erkən qoşulma hissi yaradır.', how:'Yeməkdən sonra qab-qacaq yığmağa kömək etdirin.', example:'"Sən öz boşqabını gətir" deyə konkret tapşırıq verin.'},
-      {a:'Nəzarətli diş fırçalama', why:'Sağlamlıq vərdişi və müstəqillik balansı.', how:'Özü fırçalasın, siz sadəcə yoxlayıb tamamlayın.', example:'"Sən əvvəl fırçala, mən yoxlayacam" deyin.'},
-      {a:'Otaq səliqəsi tapşırığı', why:'Nizam-intizam və məsuliyyət hissi inkişaf etdirir.', how:'Oyuncaqları öz yerinə yığmaq üçün konkret tapşırıq verin.', example:'"Kubları qutuya, kitabları rəfə" deyə addım-addım göstərin.'},
-      {a:'Vizual gün cədvəli', why:'Zaman və rutin anlayışını inkişaf etdirir.', how:'Şəkilli cədvəllə günün ardıcıllığını göstərin.', example:'Səhər yeməyi-oyun-yuxu şəkillərini divara asın, hər addımı göstərin.'}
-    ]
-  },
-  '5–6': {
-    'Nitq': [
-      {a:'Hekayəni ardıcıl nəql etmə', why:'Məntiqi ardıcıllıq və nitq təşkilatlanması məktəb hazırlığının əsasıdır.', how:'Baxdığı cizgi filmini və ya oxuduğu nağılı əvvəl-orta-son ardıcıllığı ilə danışmasını istəyin.', example:'"Əvvəl nə oldu? Sonra? Axırda?" sualları ilə strukturu dəstəkləyin.'},
-      {a:'Hərf-səs əlaqəsi', why:'Oxumağa hazırlığın ən vacib addımıdır (fonoloji fərqinə varma).', how:'Sadə hərfləri göstərib hansı səslə başladığını soruşun.', example:'"A hərfi — alma sözü də A ilə başlayır" deyə əlaqə qurun.'},
-      {a:'Öz adını yazma', why:'İncə motorika ilə simvolik təfəkkürü birləşdirir.', how:'Adının hərflərini nöqtələrlə göstərib üzərindən keçirdin.', example:'Əvvəl böyük hərflərlə, tədricən kiçildərək məşq edin.'},
-      {a:'Mürəkkəb cümlə qurma', why:'Qrammatik inkişaf və fikrin dəqiq ifadəsi üçün vacibdir.', how:'"Çünki", "amma" kimi bağlayıcılarla cümlə qurmasını təşviq edin.', example:'"Niyə oyuncağı sevirsən?" — "Çünki..." ilə cavab tələb edin.'},
-      {a:'Sözlük oyunu', why:'Söz ehtiyatının sürətli genişlənməsini təmin edir.', how:'Bir kateqoriyada (heyvanlar, rənglər) növbə ilə söz deyin.', example:'"Mən aslan dedim, sən başqa heyvan de" — oyunu davam etdirin.'}
-    ],
-    'Motorika': [
-      {a:'Velosiped sürmə', why:'Tarazlıq, koordinasiya və özünə inam qazandırır.', how:'Köməkçi təkərlə başlayıb tədricən müstəqilliyə keçin.', example:'İlk uğurlu metrlərdə mütləq təriflə möhkəmləndirin.'},
-      {a:'Düymə və bağcıq bağlama', why:'İncə motorika məktəb üçün lazım olan yazı hazırlığını dəstəkləyir.', how:'Ayaqqabı bağcığı və ya düymə bağlamağı addım-addım öyrədin.', example:'Böyük, yavaş hərəkətlərlə nümayiş edib, sonra onunla birlikdə edin.'},
-      {a:'Xətt üzrə dəqiq kəsmə', why:'Əl sabitliyi və göz-əl koordinasiyasını təkmilləşdirir.', how:'Əyri və düz xətlər üzərindən qayçı ilə kəsdirin.', example:'Sadə formadan (kvadrat) mürəkkəbə (ulduz) keçin.'},
-      {a:'Topu ayaqla dəqiq vurma', why:'Kobud motorika və məsafə qiymətləndirməsini inkişaf etdirir.', how:'Müəyyən hədəfə (qapı, qutu) topu vurmağı məşq etdirin.', example:'"Bu qutuya vur" deyə konkret hədəf göstərin.'},
-      {a:'Konstruktor ilə tikinti', why:'Planlaşdırma və məkan təfəkkürünü gücləndirir.', how:'Nümunə şəkilə baxaraq eyni tikilini qurmasını istəyin.', example:'"Əvvəl əsas, sonra divarlar" — mərhələli planlaşdırmanı öyrədin.'}
-    ],
-    'İdrak': [
-      {a:'1-dən 20-yə sayma və tanınma', why:'Rəqəm anlayışı və say-simvolikanın əsasını qoyur.', how:'Gündəlik əşyaları sayarkən rəqəmi də göstərin.', example:'"5 alma var" deyərkən 5 rəqəmini də yazıb göstərin.'},
-      {a:'Sadə toplama-çıxma', why:'Konkret riyazi əməliyyatların başlanğıcıdır.', how:'Əşyalarla (düymə, oyuncaq) toplama-çıxma nümayiş etdirin.', example:'"3 kubun var, 1 də əlavə et, neçə oldu?" sualı verin.'},
-      {a:'Böyükdən-kiçiyə düzmə', why:'Sıralama məntiqi və müqayisə bacarığını inkişaf etdirir.', how:'Fərqli ölçülü əşyaları sıra ilə düzmə tapşırığı verin.', example:'"Ən böyüyü haradan başlayaq?" deyə düşündürün.'},
-      {a:'Sadə tapmacaların müstəqil həlli', why:'Problem həlli və səbir bacarığını formalaşdırır.', how:'Yaşına uyğun tapmacanı köməksiz həll etməyə cəhd etdirin.', example:'Çətinləşəndə birbaşa həll etmək əvəzinə "hansı hissə uyğun ola bilər?" sualı verin.'},
-      {a:'Səbəb-nəticə sualları', why:'Analitik düşüncə və məntiqi əlaqələndirməni inkişaf etdirir.', how:'"Niyə?" sualları ilə hadisələr arasında əlaqə qurdurun.', example:'"Niyə yerdə su var?" — "Çünki yağış yağdı" cavabına yönləndirin.'}
-    ],
-    'Sosial-Emosional': [
-      {a:'Komanda oyunları', why:'Əməkdaşlıq və qrup daxilində rol almağı öyrədir.', how:'Sadə komanda oyunlarında (estafet) iştirak etdirin.', example:'"Biz bir komandayıq, birlikdə qazanırıq" mesajını vurğulayın.'},
-      {a:'Məğlubiyyəti sakit qəbul etmə', why:'Emosional tənzimləmə və dözümlülük qazandırır.', how:'Oyun uduzanda hisslərini sözlə ifadə etməsinə kömək edin.', example:'"Uduzmaq bəzən olur, növbəti dəfə yaxşı oynayarsan" deyin.'},
-      {a:'Empatiya söhbəti', why:'Başqasının hissini anlama bacarığını formalaşdırır.', how:'"O necə hiss edir?" sualı ilə başqa perspektivi düşündürün.', example:'"Dostun oyuncağını itirib, o necə hiss edir?" deyə soruşun.'},
-      {a:'Özünütənzimləmə məşqi', why:'Qəzəb və həyəcanı idarə etmə bacarığını inkişaf etdirir.', how:'Sakitləşmək üçün dərin nəfəs almağı öyrədin.', example:'"3 dərin nəfəs alaq" — birlikdə nümayiş etdirin.'},
-      {a:'Yeni insanlarla ünsiyyət', why:'Sosial cəsarət və ünsiyyət bacarığını gücləndirir.', how:'Yeni tanışlıqda salamlaşma və özünü təqdim etməyi öyrədin.', example:'"Salam, mənim adım..." cümləsini birlikdə məşq edin.'}
-    ],
-    'Özünəxidmət': [
-      {a:'Tam müstəqil geyinmə', why:'Məktəbəqədər müstəqillik məktəb həyatına hazırlığın açarıdır.', how:'Bütün geyim prosesini köməksiz etməyə imkan verin.', example:'Səhvləri (tərs geyinmə) dərhal düzəltmək əvəzinə özü fərq etsin deyə gözləyin.'},
-      {a:'Otaq səliqəsinə köməklik', why:'Məsuliyyət və nizam-intizam vərdişini gücləndirir.', how:'Oyuncaqları öz yerinə yığmağa kömək etdirin, tapşırıq verin.', example:'"Sən kitabları yığ, mən oyuncaqları" deyə bölün.'},
-      {a:'Müstəqil diş fırçalama', why:'Tam müstəqil gigiyena vərdişi formalaşdırır.', how:'Özü fırçalasın, siz yalnız nəticəni yoxlayın.', example:'Ay sonu "İndi tamam öz-özünə edirsən!" deyə təqdir edin.'},
-      {a:'Kiçik məsuliyyət tapşırığı', why:'Ailə daxilində rol almağı və məsuliyyəti öyrədir.', how:'Süfrə düzmək kimi konkret gündəlik tapşırıq verin.', example:'"Hər axşam süfrə sənin işindir" deyə sabit rol təyin edin.'},
-      {a:'Vaxt idarəsi başlanğıcı', why:'Gələcək məktəb rejiminə hazırlıqdır.', how:'Saat/taymerlə fəaliyyət vaxtını göstərin.', example:'"10 dəqiqə oyun, sonra yığışdırma vaxtı" deyin.'}
-    ]
-  },
-  '7+': {
-    'Nitq': [
-      {a:'Gündəlik sərbəst oxu', why:'Oxu vərdişi akademik uğurun ən güclü proqnozlaşdırıcısıdır.', how:'Gündə 15-20 dəqiqə maraqlı kitab oxumasına şərait yaradın.', example:'Kitab seçimini ona buraxın ki, motivasiya daxili olsun.'},
-      {a:'Oxuduğunu təhlil etmə', why:'Anlama (comprehension) bacarığını dərinləşdirir.', how:'Oxuduqdan sonra "əsas fikir nə idi?" sualı verin.', example:'"Sən personajın yerində olsaydın nə edərdin?" sualı əlavə edin.'},
-      {a:'Qısa gündəlik yazma', why:'Yazılı ifadə və özünü təhlil bacarığını inkişaf etdirir.', how:'Gün ərzində baş verən bir hadisəni 2-3 cümlə ilə yazdırın.', example:'"Bu gün məni ən çox nə sevindirdi?" sualı ilə başlayın.'},
-      {a:'Fikrini əsaslandırma', why:'Tənqidi düşüncə və arqumentasiya bacarığını gücləndirir.', how:'Bir mövzuda fikrini deyib "niyə belə düşünürsən?" soruşun.', example:'"Hansı film daha yaxşıdır və niyə?" kimi sual verin.'},
-      {a:'Yeni akademik terminlər', why:'Söz ehtiyatının məktəb tələblərinə uyğun genişlənməsi.', how:'Həftədə 1 yeni sözü izah edib real kontekstdə işlədin.', example:'"Bu gün sözümüz: eksperiment" — elmi kontekstdə istifadə edin.'}
-    ],
-    'Motorika': [
-      {a:'Səliqəli əl yazısı məşqi', why:'Yazı sürəti və oxunaqlılığı akademik performansa təsir edir.', how:'Sətir üzərində müntəzəm yazı məşqi etdirin.', example:'Gündə 5-10 sətir, tələsmədən, düzgün tutuşla.'},
-      {a:'Komanda idmanı', why:'Kobud motorika ilə yanaşı əməkdaşlıq bacarığını inkişaf etdirir.', how:'Futbol, basketbol kimi komanda idmanına yönləndirin.', example:'Nəticədən çox səy və komanda ruhunu təqdir edin.'},
-      {a:'Detallı konstruktor/model işi', why:'Səbir, dəqiqlik və məkan planlaşdırmasını gücləndirir.', how:'Çoxhissəli konstruktor dəstini təlimata uyğun quraşdırdın.', example:'Çətinləşəndə həll etmək əvəzinə "təlimatı yenidən oxu" deyin.'},
-      {a:'Kaligrafiya/rəsm dərinləşdirmə', why:'İncə motorika dəqiqliyi və yaradıcılığı birləşdirir.', how:'Detallı rəsm və ya bəzəkli yazı məşqi edin.', example:'Sevdiyi personajı addım-addım çəkməyi öyrədin.'},
-      {a:'Kordinasiya idman oyunları', why:'Reaksiya sürəti və bədən nəzarətini inkişaf etdirir.', how:'İp atlama, tarazlıq lövhəsi kimi fəaliyyətlər edin.', example:'Gündəlik 5 dəqiqə ip atlama hədəfi qoyun.'}
-    ],
-    'İdrak': [
-      {a:'Çoxmərhələli riyazi məsələ', why:'Ardıcıl məntiqi düşüncə və problem parçalama bacarığını inkişaf etdirir.', how:'Bir neçə addımlı sözlü məsələni birlikdə mərhələlərə bölün.', example:'"Əvvəl nə tapmalıyıq? Sonra nə?" deyə addımlara ayırın.'},
-      {a:'Strategiya oyunları', why:'İrəlini planlaşdırma və nəticələri qabaqcadan görmə bacarığı.', how:'Şahmat, dama kimi strateji oyunlar oynayın.', example:'"Bu hərəkətdən sonra nə olacaq?" sualı ilə düşündürün.'},
-      {a:'Kiçik tədqiqat layihəsi', why:'Elmi təfəkkür və müşahidə bacarığını formalaşdırır.', how:'Bitki inkişafı kimi sadə müşahidə layihəsi aparın.', example:'Gündəlik dəftərdə bitkinin böyüməsini şəkillə qeyd etdirin.'},
-      {a:'Öz vaxtını planlaşdırma', why:'İcra funksiyaları (executive function) inkişafını dəstəkləyir.', how:'Günün tapşırıqlarını özü sıraya düzsün.', example:'"Əvvəl ev tapşırığı, yoxsa oyun? Niyə?" sualı ilə düşündürün.'},
-      {a:'"Əgər...olsa" ssenariləri', why:'Fərziyyə qurma və nəticə çıxarma bacarığını inkişaf etdirir.', how:'Fərziyyə sualları verib düşünməyə təşviq edin.', example:'"Əgər hamı avtomobillə getsə, nə baş verər?" deyə soruşun.'}
-    ],
-    'Sosial-Emosional': [
-      {a:'Emosiya gündəliyi', why:'Özünüşüaqlaşdırma və emosional savadlılığı artırır.', how:'Gün ərzində hiss etdiklərini qısaca qeyd etməyi öyrədin.', example:'"Bu gün özümü... hiss etdim, çünki..." formatını istifadə edin.'},
-      {a:'Komanda layihəsində iştirak', why:'Əməkdaşlıq və məsuliyyət bölgüsü bacarığını inkişaf etdirir.', how:'Dostları ilə birgə kiçik layihə (təqdimat, oyun) hazırlasın.', example:'"Sən hansı hissəni öz üzərinə götürürsən?" sualı verin.'},
-      {a:'Liderlik təcrübəsi', why:'Özünəinam və qərar qəbuletmə bacarığını gücləndirir.', how:'Ailə fəaliyyətində ona "rəhbər" rolu verin.', example:'"Bu gün gəzintini sən planlaşdır" deyin.'},
-      {a:'Konflikti sözlə həll etmə', why:'Yetkin ünsiyyət və problem həlli bacarığını formalaşdırır.', how:'Real münaqişədə fiziki reaksiya əvəzinə sözlə həll etməyi öyrədin.', example:'"Nə hiss etdiyini ona sözlə de" deyə yönləndirin.'},
-      {a:'Səhvini qəbul etmə', why:'Məsuliyyət hissi və özünütənqid balansını yaradır.', how:'Səhv edəndə cəzadan əvvəl "nə öyrəndin?" sualı verin.', example:'"Səhv etmək normaldır, indi nə edə bilərik?" deyə dəstəkləyin.'}
-    ],
-    'Özünəxidmət': [
-      {a:'Gündəlik öz-rejimini qurma', why:'Müstəqillik və vaxt idarəsi bacarığının yetkinləşməsi.', how:'Gün planını (dərs, oyun, yuxu) özü tərtib etsin.', example:'Həftəlik cədvəl yaradıb divara asın, özü izləsin.'},
-      {a:'Məktəb çantası məsuliyyəti', why:'Təşkilatçılıq bacarığı və məsuliyyəti gücləndirir.', how:'Çantasını özü yığsın, siz sadəcə son yoxlama edin.', example:'"Sabahkı dərs cədvəlinə bax, nə lazımdır?" sualı verin.'},
-      {a:'Kiçik büdcə idarəsi', why:'Maliyyə savadlılığının ilk addımı.', how:'Cib pulunu necə xərcləyəcəyini planlaşdırmasına kömək edin.', example:'"Bunu indi xərcləsən, sonra üçün nə qalar?" sualı verin.'},
-      {a:'Ev tapşırığı məsuliyyəti', why:'Ailə daxilində bərabər məsuliyyət bölgüsünü öyrədir.', how:'Yatağını düzəltmək kimi sabit ev işi tapşırın.', example:'"Bu sənin gündəlik işindir, hər səhər" deyə vərdiş yaradın.'},
-      {a:'Kömək təşəbbüsü göstərmə', why:'Empatiya və ailəyə töhfə vermə hissini formalaşdırır.', how:'Kömək lazım olan anları görüb özü təklif etməsini təşviq edin.', example:'"Görürəm ki, yorğunsan, kömək edim?" deməyi öyrədin.'}
-    ]
-  }
-};
-
 function currentReportAge(){ return QUESTION_SETS[state.age] ? state.age : '3–4'; }
 
-const AGE_STEPS = ['1–2','3–4','5–6','7+'];
-function poolFor(age, dom, scores){
-  const i = AGE_STEPS.indexOf(age);
-  const low = scores && typeof scores[dom] === 'number' && scores[dom] < 40 && i > 0;
-  return { pool: AGE_ACTIVITY_POOL[low ? AGE_STEPS[i-1] : age][dom], base: !!low };
-}
-
-function generateWeekPlan(age, weakDomains, scores){
-  const dayDomains = ['Nitq','Motorika','İdrak','Sosial-Emosional','Özünəxidmət'];
-  const days = [];
-  for(let i=0;i<5;i++){
-    const dom = dayDomains[i];
-    const pf = poolFor(age, dom, scores);
-    const item = pf.pool[0];
-    days.push({day:WEEK_DAYS[i], domain:dom, ic:DOMAIN_ACTIVITIES[dom].ic, activity:item.a, why:item.why, how:item.how, example:item.example, focus:weakDomains.includes(dom), special:pf.base?'Əsas səviyyə':undefined});
-  }
-  const weakest = weakDomains[0] || dayDomains[0];
-  const pw = poolFor(age, weakest, scores);
-  const wItem = pw.pool[1] || pw.pool[0];
-  days.push({day:WEEK_DAYS[5], domain:weakest, ic:DOMAIN_ACTIVITIES[weakest].ic, activity:'Təkrar: '+wItem.a, why:wItem.why, how:wItem.how, example:wItem.example, focus:true, special:'Zəif sahə təkrarı'});
-  days.push({day:WEEK_DAYS[6], domain:null, ic:'👨‍👩‍👧', activity:'Ailə vaxtı — sərbəst oyun', why:'Uşağın stresssiz, təzyiqsiz oynaya bildiyi günlər emosional sağlamlıq üçün vacibdir.', how:'Bu gün proqram yoxdur, sadəcə birlikdə əylənin, gəzintiyə çıxın.', example:'Parkda gəzinti, birgə film izləmə və ya sadəcə sərbəst oyun kifayətdir.', special:'Sərbəst gün'});
-  return days;
-}
-
-function generateMonthPlan(age, weakDomains, scores){
-  const dayDomains = ['Nitq','Motorika','İdrak','Sosial-Emosional','Özünəxidmət'];
-  const weeks = [];
-  for(let w=0; w<4; w++){
-    const days = [];
-    for(let i=0;i<5;i++){
-      const dom = dayDomains[i];
-      const pf = poolFor(age, dom, scores);
-      const item = pf.pool[(w+1) % pf.pool.length];
-      days.push({day:WEEK_DAYS[i], domain:dom, ic:DOMAIN_ACTIVITIES[dom].ic, activity:item.a, why:item.why, how:item.how, example:item.example, focus:weakDomains.includes(dom), special:pf.base?'Əsas səviyyə':undefined});
-    }
-    const weakest = weakDomains.length ? weakDomains[w % weakDomains.length] : dayDomains[w % 5];
-    const pw = poolFor(age, weakest, scores);
-    const wItem = pw.pool[(w+3) % pw.pool.length];
-    days.push({day:WEEK_DAYS[5], domain:weakest, ic:DOMAIN_ACTIVITIES[weakest].ic, activity:'Təkrar: '+wItem.a, why:wItem.why, how:wItem.how, example:wItem.example, focus:true, special:'Zəif sahə təkrarı'});
-    days.push({day:WEEK_DAYS[6], domain:null, ic:'👨‍👩‍👧', activity:'Ailə vaxtı — sərbəst oyun', why:'Uşağın stresssiz, təzyiqsiz oynaya bildiyi günlər emosional sağlamlıq üçün vacibdir.', how:'Bu gün proqram yoxdur, birlikdə istirahət edin.', example:'Ailəvi oyun gecəsi və ya təbiətə gəzinti təşkil edin.', special:'Sərbəst gün'});
-    weeks.push({weekNum:w+1, focusDomain: weakest, days});
-  }
-  return weeks;
-}
+function generateWeekPlan(age, weakDomains, scores){ return PLANS.week(age, scores); }
+function generateMonthPlan(age, weakDomains, scores){ return PLANS.month(age, scores); }
 
 let planDuration = 'week';
 
 function setDuration(d){ planDuration=d; const app=document.getElementById('app'); app.innerHTML=''; app.appendChild(screenReport()); appendFooter(app); }
 
-function currentReportAge(){ return AGE_ACTIVITY_POOL[state.age] ? state.age : '3–4'; }
-
 function dayCardHTML(d){
+  const steps = (d.steps||[]).map(x=>`<li style="margin-bottom:4px;">${x}</li>`).join('');
   return `<div class="plan-day-card ${d.focus?'focus':''}">
-    <div class="plan-day-head"><span>${e3d(d.ic,(d.day||'').length,26)} ${d.day}</span>${d.special?`<span class="plan-badge">${d.special}</span>`:(d.focus?`<span class="plan-badge">Fokus sahə</span>`:'')}</div>
+    <div class="plan-day-head"><span>${e3d(d.ic,(d.day||'').length,26)} ${d.day}</span>${d.special?`<span class="plan-badge">${d.special}</span>`:''}</div>
     <div class="plan-day-title">${d.activity}</div>
+    <div class="plan-day-how"><b>Necə edilir:</b><ol style="margin:6px 0 0 18px; padding:0;">${steps}</ol></div>
     <div class="plan-day-why">💡 ${d.why}</div>
-    <div class="plan-day-how"><b>Necə:</b> ${d.how}</div>
-    <div class="plan-day-example"><b>Nümunə:</b> ${d.example}</div>
+    ${d.sign?`<div class="plan-day-example"><b>İrəliləyiş göstəricisi:</b> ${d.sign}</div>`:''}
+    ${d.up?`<div class="plan-day-example"><b>Növbəti addım:</b> ${d.up}</div>`:''}
+  </div>`;
+}
+
+function frameBoxHTML(fr){
+  const low = fr.lowDomains.length ? `<div style="margin-top:8px;"><b>Diqqət tələb edən sahələr:</b> ${fr.lowDomains.join(', ')}</div>` : '';
+  const cons = fr.band<=3 ? `<div style="margin-top:8px; background:#fff; border-radius:10px; padding:10px;"><b>Mütəxəssis məsləhəti:</b> ${fr.consult}</div>` : '';
+  return `<div class="plan-day-card focus" style="margin-bottom:12px;">
+    <div class="plan-day-head"><span>📊 Ümumi nəticə: ${fr.overall}%</span><span class="plan-badge">${fr.name}</span></div>
+    <div class="plan-day-why" style="margin-top:8px;">${fr.meaning}</div>
+    <div style="margin-top:8px;"><b>Tövsiyə olunan ritm:</b> ${fr.sessions}.</div>${low}${cons}
   </div>`;
 }
 
@@ -1396,16 +1218,17 @@ async function submitLead(){
 function renderPlanSection(){
   const age = currentReportAge();
   const scores = computeScores();
-  const weakDomains = DOMAIN_ORDER.filter(d=>scores[d]<60);
+  const fr = PLANS.frame(age, scores);
   if(planDuration==='week'){
-    const days = generateWeekPlan(age, weakDomains, scores);
-    return `<div class="plan-days-grid">${days.slice(0,FREE_DAYS).map(dayCardHTML).join('')}</div>` + planLockHTML(days.length-FREE_DAYS);
+    const days = PLANS.week(age, scores);
+    return frameBoxHTML(fr) + `<div class="plan-days-grid">${days.slice(0,FREE_DAYS).map(dayCardHTML).join('')}</div>` + planLockHTML(days.length-FREE_DAYS);
   }
-  const weeks = generateMonthPlan(age, weakDomains, scores);
+  const weeks = PLANS.month(age, scores);
   const w = weeks[0];
   const total = weeks.reduce((n,x)=>n+x.days.length,0);
-  return `<div class="plan-week-block">
-    <div class="plan-week-head">📅 ${w.weekNum}-ci həftə — Fokus: ${DOMAIN_ACTIVITIES[w.focusDomain].ic} ${w.focusDomain}</div>
+  return frameBoxHTML(fr) + `<div class="plan-week-block">
+    <div class="plan-week-head">📅 ${w.weekNum}-ci həftə — ${w.stage}. Fokus: ${DOMAIN_ACTIVITIES[w.focusDomain].ic} ${w.focusDomain}</div>
+    <p style="font-size:.85rem; color:var(--ink-soft); font-weight:700; margin:6px 0 10px;">${w.stageText}</p>
     <div class="plan-days-grid">${w.days.slice(0,FREE_DAYS).map(dayCardHTML).join('')}</div>
   </div>` + planLockHTML(total-FREE_DAYS);
 }
@@ -1418,20 +1241,22 @@ function buildPlanDoc(o){
   const dayRow = d => `<div style="background:#fbf3e7; border-radius:12px; padding:16px; margin-bottom:12px; border-left:4px solid ${d.focus?'#F4A261':'#2A9D8F'};">
     <div style="font-weight:800; font-size:.85rem; color:#6A0000;">${d.ic} ${d.day}${d.special?' — '+d.special:''}</div>
     <div style="font-weight:800; font-size:1.05rem; margin-top:4px;">${d.activity}</div>
+    <div style="color:#333; font-size:.9rem; margin-top:6px;"><b>Necə edilir:</b><ol style="margin:6px 0 0 18px; padding:0;">${(d.steps||[]).map(x=>'<li style="margin-bottom:4px;">'+x+'</li>').join('')}</ol></div>
     <div style="color:#2A9D8F; font-size:.85rem; margin-top:6px; font-style:italic;">💡 ${d.why}</div>
-    <div style="color:#333; font-size:.9rem; margin-top:6px;"><b>Necə edilir:</b> ${d.how}</div>
-    <div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Nümunə:</b> ${d.example}</div>
+    ${d.sign?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>İrəliləyiş göstəricisi:</b> ${d.sign}</div>`:''}
+    ${d.up?`<div style="color:#555; font-size:.88rem; margin-top:4px; background:#fff; padding:8px; border-radius:8px;"><b>Növbəti addım:</b> ${d.up}</div>`:''}
   </div>`;
+  const fr = PLANS.frame(age, scores);
 
   let planBody = '';
   if(duration==='week'){
     const wd = generateWeekPlan(age, weakDomains, scores);
     planBody = (full ? wd : wd.slice(0, FREE_DAYS)).map(dayRow).join('');
   } else if(full){
-    planBody = generateMonthPlan(age, weakDomains, scores).map(w=>`<h3>${w.weekNum}-ci həftə — Fokus: ${w.focusDomain}</h3>${w.days.map(dayRow).join('')}`).join('');
+    planBody = generateMonthPlan(age, weakDomains, scores).map(w=>`<h3>${w.weekNum}-ci həftə — ${w.stage}. Fokus: ${w.focusDomain}</h3><p style="font-size:.88rem; color:#555;">${w.stageText}</p>${w.days.map(dayRow).join('')}`).join('');
   } else {
     const first = generateMonthPlan(age, weakDomains, scores)[0];
-    planBody = `<h3>${first.weekNum}-ci həftə — Fokus: ${first.focusDomain}</h3>${first.days.slice(0,FREE_DAYS).map(dayRow).join('')}`;
+    planBody = `<h3>${first.weekNum}-ci həftə — ${first.stage}. Fokus: ${first.focusDomain}</h3><p style="font-size:.88rem; color:#555;">${first.stageText}</p>${first.days.slice(0,FREE_DAYS).map(dayRow).join('')}`;
   }
   if(!full) planBody += `<p style="background:#fbf3e7; padding:14px; border-radius:12px; font-weight:700;">🔒 Tam plan pulsuz verilir. Almaq üçün UşaqIQ-da "Tam planı pulsuz al" düyməsini basın və ya mərkəzə zəng edin: <b>+994 55 415 72 15</b></p>`;
 
@@ -1451,12 +1276,18 @@ function buildPlanDoc(o){
   <h2>Sahələr üzrə nəticə</h2>
   ${DOMAIN_ORDER.map(d=>`<div class="score-row"><span>${DOMAIN_ACTIVITIES[d].ic} ${d}</span><b>${scores[d]}%</b></div>`).join('')}
 
+  <h2>📊 Ümumi qiymətləndirmə: ${fr.overall}% — ${fr.name}</h2>
+  <p>${fr.meaning}</p>
+  <p><b>Tövsiyə olunan ritm:</b> ${fr.sessions}.</p>
+  ${fr.lowDomains.length?`<p><b>Diqqət tələb edən sahələr:</b> ${fr.lowDomains.join(', ')}</p>`:''}
+  ${full?`<h3>İş prinsipləri</h3><ul>${fr.principles.map(x=>'<li>'+x+'</li>').join('')}</ul><h3>Nələrdən qaçınmalı</h3><ul>${fr.avoid.map(x=>'<li>'+x+'</li>').join('')}</ul>`:''}
+
   <h2>${duration==='week'?'📅':'🗓️'} ${durLabel} Plan</h2>
   ${planBody}
 
   <h2>🏥 Mütəxəssisə Müraciət</h2>
   <p style="font-size:.85rem; color:#666;">Bu hesabat diaqnoz qoymur və mütəxəssis qiymətləndirməsini əvəz etmir.</p>
-  <p>${weakDomains.length?`<b>${weakDomains.join(', ')}</b> sahələrində 3-4 həftə ev tapşırıqlarına baxmayaraq irəliləyiş olmazsa,`:'Hər hansı sahədə geriləmə müşahidə etsəniz,'} <b>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</b> ilə əlaqə saxlayın: <b>${o.contact||'+994 55 415 72 15'}</b></p>
+  <p>${fr.consult} <b>AN Psixoloji Dəstək və Reabilitasiya Mərkəzi</b> ilə əlaqə saxlayın: <b>${o.contact||'+994 55 415 72 15'}</b></p>
 
   <footer>Bu sənəd UşaqIQ tətbiqi tərəfindən avtomatik yaradılıb.<br><a href="https://aze-ai.az" style="color:#D2A55D; text-decoration:none; font-weight:700;">By securtiy_group</a><br>© 2026 Bütün hüquqlar qorunur.</footer>
   </body></html>`;
@@ -1574,7 +1405,7 @@ function adminToast(msg){
 }
 
 async function sendLeadPlan(lead){
-  const age = AGE_ACTIVITY_POOL[lead.age] ? lead.age : '3–4';
+  const age = QUESTION_SETS[lead.age] ? lead.age : '3–4';
   const sc = lead.scores || {};
   DOMAIN_ORDER.forEach(function(d){ if(typeof sc[d] !== 'number') sc[d] = 60; });
   const html = buildPlanDoc({
